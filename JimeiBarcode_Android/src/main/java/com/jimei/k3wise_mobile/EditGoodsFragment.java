@@ -24,16 +24,6 @@ import com.jimei.k3wise_mobile.Util.CommonHelper;
 import com.jimei.k3wise_mobile.Util.KingdeeK3WiseWebServiceHelper;
 import com.jimei.k3wise_mobile.Util.ShowDialog;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 
 /**
  * A simple {@link Fragment} subclass.
