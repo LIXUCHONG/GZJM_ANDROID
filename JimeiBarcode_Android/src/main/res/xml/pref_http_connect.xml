@@ -1,0 +1,21 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <EditTextPreference
+        android:defaultValue="@string/pref_default_http_server"
+        android:inputType="text"
+        android:key="http_connect_ip"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_title_http_server" />
+
+    <EditTextPreference
+        android:defaultValue="@string/pref_default_http_port"
+        android:inputType="number"
+        android:key="http_connect_port"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_title_http_port" />
+
+</PreferenceScreen>

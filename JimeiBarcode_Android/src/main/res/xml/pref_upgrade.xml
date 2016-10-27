@@ -1,0 +1,15 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Preference
+        android:key="app_version_name"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:title="@string/pref_Preference_version" />
+
+    <Preference
+        android:key="app_upgrade"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:title="@string/pref_Preference_upgrade" />
+
+</PreferenceScreen>

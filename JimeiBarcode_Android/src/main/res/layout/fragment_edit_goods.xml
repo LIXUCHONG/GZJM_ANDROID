@@ -1,0 +1,187 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.jimei.k3wise_mobile.EditGoodsFragment"
+    android:background="#fefefe">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <LinearLayout
+        android:id="@+id/edit_goods_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/edit_goods_title_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="名称："
+                android:textColor="@color/bo_title"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/edit_goods_value_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/bo_value"
+                android:textSize="20sp" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/edit_goods_title_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="型号："
+                android:textColor="@color/bo_title"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/edit_goods_value_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/bo_value"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/edit_goods_title_color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="颜色："
+                android:textColor="@color/bo_title"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/edit_goods_value_color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/bo_value"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/edit_goods_title_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="价格："
+                android:textColor="@color/bo_title"
+                android:textSize="20sp" />
+
+            <EditText
+                android:id="@+id/edit_goods_value_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/bo_value"
+                android:textSize="20sp"
+                android:maxLines="1"
+                android:inputType="numberDecimal"
+                android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/edit_goods_title_qty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="数量："
+                android:textColor="@color/bo_title"
+                android:textSize="20sp" />
+
+
+            <EditText
+                android:id="@+id/edit_goods_value_qty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/bo_value"
+                android:textSize="20sp"
+                android:maxLines="1"
+                android:inputType="numberDecimal"
+                android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+
+            <Button
+                android:id="@+id/select_inventory_select_inventory_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="库存"
+                android:textSize="20sp" />
+
+            <Button
+                android:id="@+id/edit_goods_add_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="加入清单"
+                android:textSize="20sp"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/edit_goods_edit_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="保存更改"
+                android:textSize="20sp"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/edit_goods_del_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="删除"
+                android:textSize="20sp"
+                android:textColor="#FF0000"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/edit_goods_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</FrameLayout>

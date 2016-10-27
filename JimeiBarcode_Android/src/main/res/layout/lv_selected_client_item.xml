@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical"
+    android:background="@drawable/layout_selector">
+
+    <TextView
+        android:id="@+id/tv_item_selected_client_name"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:layout_margin="10dp"
+        android:textSize="25sp"
+        android:textColor="@color/bo_value"
+        android:hint="点击选择客户"/>
+
+    <Button
+        android:id="@+id/btn_item_selected_client_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:textSize="18sp"
+        android:text="选择"
+        android:visibility="gone"/>
+
+</LinearLayout>

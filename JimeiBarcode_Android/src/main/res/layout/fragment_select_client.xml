@@ -1,0 +1,82 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.jimei.k3wise_mobile.SelectClientFragment"
+    android:background="#888888">
+
+    <LinearLayout
+        android:id="@+id/form_select_client"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#F6F6F6">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/et_select_client_input_key"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="点击此输入客户信息"
+                android:textSize="14sp"
+                android:textColor="@color/bo_value"
+                android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+
+            <Button
+                android:id="@+id/btn_select_client"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="查找客户"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/btn_select_client_by_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="分类查找"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/lv_selected_client"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="#FFFFFF" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/form_client_list"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <ListView
+            android:id="@+id/lv_client_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"/>
+
+        <com.jimei.k3wise_mobile.Component.ProgressView
+            android:id="@+id/progress_client_list"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+
+</FrameLayout>

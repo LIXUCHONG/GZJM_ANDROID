@@ -1,0 +1,51 @@
+JvmtiExport can_access_local_variables 0
+JvmtiExport can_hotswap_or_post_breakpoint 0
+JvmtiExport can_post_on_exceptions 0
+# 129 ciObject found
+ciMethod java/lang/Object getClass ()Ljava/lang/Class; 2049 1 256 0 -1
+ciMethod java/lang/Object equals (Ljava/lang/Object;)Z 4137 1 1592 0 -1
+ciMethod java/lang/String equals (Ljava/lang/Object;)Z 2113 10425 1950 0 -1
+ciMethod java/lang/String compareTo (Ljava/lang/String;)I 1753 57345 1180 0 -1
+ciMethod java/lang/Class getName ()Ljava/lang/String; 241 1 30 0 -1
+ciMethod com/android/dx/rop/cst/Constant compareTo (Lcom/android/dx/rop/cst/Constant;)I 2073 1 6048 0 0
+ciMethod com/android/dx/rop/cst/Constant compareTo0 (Lcom/android/dx/rop/cst/Constant;)I 0 0 1 0 -1
+ciMethod com/android/dx/rop/cst/CstString compareTo0 (Lcom/android/dx/rop/cst/Constant;)I 2561 1 2940 0 0
+ciMethod com/android/dx/rop/type/Type equals (Ljava/lang/Object;)Z 4097 1 4800 0 0
+ciMethod com/android/dx/rop/code/LocalItem equals (Ljava/lang/Object;)Z 4097 1 3163 0 0
+ciMethod com/android/dx/rop/code/LocalItem compareHandlesNulls (Lcom/android/dx/rop/cst/CstString;Lcom/android/dx/rop/cst/CstString;)I 4097 1 2507 0 0
+ciMethod com/android/dx/rop/code/LocalItem compareTo (Lcom/android/dx/rop/code/LocalItem;)I 4097 1 2123 0 0
+ciMethod com/android/dx/rop/code/RegisterSpec equals (ILcom/android/dx/rop/type/TypeBearer;Lcom/android/dx/rop/code/LocalItem;)Z 4097 1 5695 0 -1
+ciMethodData com/android/dx/rop/cst/Constant compareTo (Lcom/android/dx/rop/cst/Constant;)I 2 6048 orig 264 104 225 127 91 0 0 0 0 48 143 161 20 0 0 0 0 144 2 0 0 224 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 77 68 79 32 101 120 116 114 97 32 100 97 116 97 32 108 111 99 107 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 1 0 0 233 180 0 0 1 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 13 0 2 0 0 0 64 1 0 0 255 255 255 255 5 0 1 0 0 0 0 0 data 40 0x10005 0x886 0x167d3ea0 0xb0b 0x174f4240 0x30c 0x60005 0x886 0x167d3ea0 0xb0b 0x174f4240 0x30c 0xc0007 0x169d 0xb0 0x0 0x100005 0x0 0x0 0x0 0x0 0x0 0x140005 0x0 0x0 0x0 0x0 0x0 0x170005 0x0 0x0 0x0 0x0 0x0 0x1d0005 0x59c 0x167d3ea0 0xb0c 0x174f42f0 0x5f5 oops 6 2 com/android/dx/rop/cst/CstString 4 com/android/dx/rop/cst/CstFieldRef 8 com/android/dx/rop/cst/CstString 10 com/android/dx/rop/cst/CstFieldRef 36 com/android/dx/rop/cst/CstString 38 com/android/dx/rop/cst/CstType
+ciMethodData com/android/dx/rop/cst/CstString compareTo0 (Lcom/android/dx/rop/cst/Constant;)I 2 2940 orig 264 104 225 127 91 0 0 0 0 120 217 163 20 0 0 0 0 176 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 77 68 79 32 101 120 116 114 97 32 100 97 116 97 32 108 111 99 107 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 64 1 0 0 225 81 0 0 1 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 3 0 2 0 0 0 96 0 0 0 255 255 255 255 4 0 5 0 0 0 0 0 data 12 0x50004 0x0 0x167d3ea0 0x988 0x0 0x0 0xb0005 0x0 0x28a8690 0xa3c 0x0 0x0 oops 2 2 com/android/dx/rop/cst/CstString 8 java/lang/String
+ciMethodData com/android/dx/rop/type/Type equals (Ljava/lang/Object;)Z 2 4800 orig 264 104 225 127 91 0 0 0 0 8 160 164 20 0 0 0 0 32 2 0 0 80 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 77 68 79 32 101 120 116 114 97 32 100 97 116 97 32 108 111 99 107 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 1 134 0 0 1 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 7 0 2 0 0 0 208 0 0 0 255 255 255 255 7 0 2 0 0 0 0 0 data 26 0x20007 0xa5 0x20 0x101b 0x80004 0x0 0x16924e00 0xa5 0x0 0x0 0xb0007 0xa5 0x20 0x0 0x150004 0x0 0x16924e00 0xa5 0x0 0x0 0x1b0005 0x18 0x28a8690 0x8d 0x0 0x0 oops 3 6 com/android/dx/rop/type/Type 16 com/android/dx/rop/type/Type 22 java/lang/String
+ciMethodData com/android/dx/rop/code/RegisterSpec equals (ILcom/android/dx/rop/type/TypeBearer;Lcom/android/dx/rop/code/LocalItem;)Z 2 5695 orig 264 104 225 127 91 0 0 0 0 144 9 174 20 0 0 0 0 120 2 0 0 224 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 77 68 79 32 101 120 116 114 97 32 100 97 116 97 32 108 111 99 107 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 249 161 0 0 1 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 22 0 2 0 0 0 24 1 0 0 255 255 255 255 7 0 5 0 0 0 0 0 data 35 0x50007 0x4dc 0x118 0xf67 0xd0005 0x2e 0x16924e00 0xe75 0x16924eb0 0xc4 0x100007 0x0 0xc8 0xf67 0x180007 0xf2d 0x90 0x3a 0x1f0007 0x0 0x88 0x3a 0x270005 0x0 0x16924a60 0x3a 0x0 0x0 0x2a0007 0x0 0x38 0x3a 0x2e0003 0xf67 0x18 oops 3 6 com/android/dx/rop/type/Type 8 com/android/dx/rop/cst/CstInteger 24 com/android/dx/rop/code/LocalItem
+ciMethodData com/android/dx/rop/code/LocalItem equals (Ljava/lang/Object;)Z 2 3163 orig 264 104 225 127 91 0 0 0 0 80 235 173 20 0 0 0 0 56 2 0 0 48 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 77 68 79 32 101 120 116 114 97 32 100 97 116 97 32 108 111 99 107 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 217 82 0 0 1 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 25 0 2 0 0 0 232 0 0 0 255 255 255 255 4 1 1 0 0 0 0 0 data 29 0x10104 0x0 0x16924a60 0x604 0x0 0x0 0x40007 0x604 0x20 0x457 0xa0004 0x0 0x16924a60 0x57a 0x0 0x0 0x110005 0x0 0x16924a60 0x604 0x0 0x0 0x140007 0x4ee 0x38 0x117 0x180003 0x117 0x18 oops 3 2 com/android/dx/rop/code/LocalItem 12 com/android/dx/rop/code/LocalItem 18 com/android/dx/rop/code/LocalItem
+ciMethodData com/android/dx/rop/code/LocalItem compareHandlesNulls (Lcom/android/dx/rop/cst/CstString;Lcom/android/dx/rop/cst/CstString;)I 2 2507 orig 264 104 225 127 91 0 0 0 0 48 236 173 20 0 0 0 0 224 1 0 0 64 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 77 68 79 32 101 120 116 114 97 32 100 97 116 97 32 108 111 99 107 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 89 62 0 0 1 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 144 0 0 0 255 255 255 255 7 0 2 0 0 0 0 0 data 18 0x20007 0x57b 0x20 0x250 0x80007 0x57b 0x20 0x0 0xe0007 0x57b 0x20 0x0 0x150005 0xce 0x167d3ea0 0x4ad 0x0 0x0 oops 1 14 com/android/dx/rop/cst/CstString
+ciMethodData com/android/dx/rop/code/LocalItem compareTo (Lcom/android/dx/rop/code/LocalItem;)I 2 2123 orig 264 104 225 127 91 0 0 0 0 32 237 173 20 0 0 0 0 144 1 0 0 16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 77 68 79 32 101 120 116 114 97 32 100 97 116 97 32 108 111 99 107 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 17 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 89 50 0 0 1 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 19 0 2 0 0 0 64 0 0 0 255 255 255 255 2 0 8 0 0 0 0 0 data 8 0x80002 0x64b 0xd0007 0x12f 0x20 0x51c 0x1a0002 0x12f oops 0
+instanceKlass java/util/ArrayList$1
+instanceKlass com/android/dx/ssa/back/FirstFitLocalCombiningAllocator$Multiset
+instanceKlass com/android/dx/dex/file/MethodAnnotationStruct
+instanceKlass com/android/dx/ssa/PhiInsn$Operand
+instanceKlass com/android/dx/dex/code/DalvCode
+instanceKlass com/android/dx/dex/code/StdCatchBuilder
+instanceKlass com/android/dx/dex/code/RopToDop
+instanceKlass com/android/dx/dex/code/OutputFinisher
+instanceKlass com/android/dx/dex/code/OutputCollector
+instanceKlass com/android/dx/rop/code/Insn$BaseVisitor
+instanceKlass com/android/dx/io/Opcodes
+instanceKlass com/android/dx/dex/code/InsnFormat
+instanceKlass com/android/dx/dex/code/Dop
+instanceKlass com/android/dx/dex/code/Dops
+instanceKlass com/android/dx/dex/code/BlockAddresses
+instanceKlass com/android/dx/dex/code/CatchBuilder
+instanceKlass com/android/dx/dex/code/DalvInsn
+instanceKlass com/android/dx/dex/code/RopTranslator$TranslationVisitor
+instanceKlass com/android/dx/dex/code/RopTranslator
+instanceKlass com/android/dx/rop/code/LocalVariableExtractor
+instanceKlass com/android/dx/ssa/back/IdenticalBlockCombiner
+instanceKlass com/android/dx/ssa/back/SsaToRop$1
+instanceKlass com/android/dx/ssa/back/SsaToRop$PhiVisitor
+instanceKlass com/android/dx/ssa/back/FirstFitLocalCombiningAllocator$1
+instanceKlass com/android/dx/dex/file/FieldAnnotationStruct
+instanceKlass com/android/dx/ssa/back/LivenessAnalyzer$1
+instanceKlass com/android/dx/ssa/back/InterferenceGraph
