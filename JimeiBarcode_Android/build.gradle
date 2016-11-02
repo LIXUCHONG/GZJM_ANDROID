@@ -8,8 +8,8 @@ android {
         applicationId "com.jimei.k3wise_mobile"
         minSdkVersion 15
         targetSdkVersion 24
-        versionCode 2
-        versionName "2.16.1026.00"
+        versionCode 3
+        versionName "2.16.1102.00"
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {

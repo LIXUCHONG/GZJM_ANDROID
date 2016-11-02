@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,6 +31,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static android.content.Context.INPUT_METHOD_SERVICE;
 
 
 /**
@@ -64,6 +67,16 @@ public class SelectClientFragment extends HandledFragment {
 
     public SelectClientFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.fragment_select_client;
+    }
+
+    @Override
+    protected void setToolbarTitleText() {
+        super.getToolbarTitle().setText("选择客户");
     }
 
     /**
@@ -112,7 +125,7 @@ public class SelectClientFragment extends HandledFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         if(rootView==null) {
-            rootView = inflater.inflate(R.layout.fragment_select_client, container, false);
+            rootView = super.onCreateView(inflater,container,savedInstanceState);
 
             formSelectedClient=rootView.findViewById(R.id.form_select_client);
             formClientList=rootView.findViewById(R.id.form_client_list);
@@ -120,11 +133,22 @@ public class SelectClientFragment extends HandledFragment {
             lvClientList=(ListView)rootView.findViewById(R.id.lv_client_list);
             lvSelectedClientList=(ListView)rootView.findViewById(R.id.lv_selected_client);
 
+            final EditText etKey=(EditText)rootView.findViewById(R.id.et_select_client_input_key);
+            etKey.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if(!hasFocus) {
+                        InputMethodManager imm = (InputMethodManager) (getActivity().getSystemService(INPUT_METHOD_SERVICE));
+                        imm.hideSoftInputFromWindow(etKey.getWindowToken(), 0);
+                    }
+                }
+            });
+
             Button btnFindClientByKey =(Button) rootView.findViewById(R.id.btn_select_client);
             btnFindClientByKey.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String inputKey=((EditText)rootView.findViewById(R.id.et_select_client_input_key)).getText().toString();
+                    String inputKey=etKey.getText().toString();
                     if(!inputKey.equals("")) {
                         try {
                             currentSelectedClientListIndex=0;

@@ -94,7 +94,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             mDefaultHandler.uncaughtException(thread, ex);
         } else {
             try {
-                Thread.sleep(4000);
+                Thread.sleep(3500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

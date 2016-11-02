@@ -13,6 +13,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.jimei.k3wise_mobile.BO.Goods;
+import com.jimei.k3wise_mobile.Component.HandledFragment;
 import com.jimei.k3wise_mobile.Interface.SalesOrderInterface;
 import com.jimei.k3wise_mobile.Util.CommonHelper;
 import com.jimei.k3wise_mobile.Util.ShowDialog;
@@ -26,7 +27,7 @@ import java.util.Map;
  * Use the {@link SaleGoodsListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SaleGoodsListFragment extends Fragment {
+public class SaleGoodsListFragment extends HandledFragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String GOODS_LIST = "goods_list";
@@ -45,6 +46,16 @@ public class SaleGoodsListFragment extends Fragment {
 
     public SaleGoodsListFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.fragment_sale_goods_list;
+    }
+
+    @Override
+    protected boolean isShowToolBar() {
+        return false;
     }
 
     /**
@@ -88,7 +99,7 @@ public class SaleGoodsListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         if (rootView == null) {
-            rootView = inflater.inflate(R.layout.fragment_sale_goods_list, container, false);
+            rootView = super.onCreateView(inflater,container,savedInstanceState);
 
             goodsListView = (ListView) rootView.findViewById(R.id.sale_goods_list_lv);
             sumQtyView = (TextView) rootView.findViewById(R.id.sale_goods_list_sum_qty);

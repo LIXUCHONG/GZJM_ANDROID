@@ -98,13 +98,17 @@ public class SaleOrderInfoFragment extends HandledFragment {
         }
     }
 
+    public int getLayoutId(){
+        return R.layout.fragment_sale_order_info;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
         if(rootView==null) {
-            rootView = inflater.inflate(R.layout.fragment_sale_order_info, container, false);
+            rootView = super.onCreateView(inflater,container,savedInstanceState);
 
             formSaleOrderInfo=rootView.findViewById(R.id.sales_order_info_form);
             lvSelectOrderInfo =(ListView) rootView.findViewById(R.id.sales_order_info_lv);
@@ -149,24 +153,7 @@ public class SaleOrderInfoFragment extends HandledFragment {
             viewSubmitOrder.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(verifyViewInfo()&&salesOrderInterface.verifySalesOrderInfo()) {
-                        salesOrderInterface.getSalesOrder().SalesGoods = salesOrderInterface.returnSaleGoodsList();
-
-                        String remark=((AutoCompleteTextView) rootView.findViewById(R.id.et_sales_order_info_remark)).getText().toString();
-                        String amount1 = ((EditText) rootView.findViewById(R.id.et_sales_order_info_amount1)).getText().toString();
-                        String amount2 = ((EditText) rootView.findViewById(R.id.et_sales_order_info_amount2)).getText().toString();
-                        String amount3 = ((EditText) rootView.findViewById(R.id.et_sales_order_info_amount3)).getText().toString();
-                        salesOrderInterface.getSalesOrder().setRemark(remark);
-                        if (!amount1.equals("")) {
-                            salesOrderInterface.getSalesOrder().setDyeFee(Double.parseDouble(amount1));
-                        }
-                        if (!amount2.equals("")) {
-                            salesOrderInterface.getSalesOrder().setOtherFee(Double.parseDouble(amount2));
-                        }
-                        if (!amount3.equals("")) {
-                            salesOrderInterface.getSalesOrder().setEarnestMoney(Double.parseDouble(amount3));
-                        }
-
+                    if(verifyOrderInfoView()) {
                         salesOrderInterface.submitSalesOrder();
                     }
                 }
@@ -185,6 +172,7 @@ public class SaleOrderInfoFragment extends HandledFragment {
         }
     }
 
+    @Override
     public boolean onBackPressed() {
         if (lvSelectOrderInfo.getVisibility() == View.VISIBLE) {
             formSaleOrderInfo.setVisibility(View.VISIBLE);
@@ -193,6 +181,11 @@ public class SaleOrderInfoFragment extends HandledFragment {
         } else {
             return true;
         }
+    }
+
+    @Override
+    public boolean isShowToolBar(){
+        return false;
     }
 
     void showSaleOrderInfoList(int tv_Id_OrderInfo){
@@ -269,13 +262,14 @@ public class SaleOrderInfoFragment extends HandledFragment {
         });
     }
 
-    private boolean verifyViewInfo(){
+    public boolean verifyOrderInfoView(){
 
         SalesOrder order=salesOrderInterface.getSalesOrder();
         if(order.Client==null||order.Client.getNumber()==null||order.Client.getNumber().equals("")){
             ShowDialog.WarningDialog(getActivity(), "请选择正确的【购货单位】");
             return false;
         }
+
         if(order.ShippingType==null||order.ShippingType.getId()==0){
             ShowDialog.WarningDialog(getActivity(), "请选择正确的【订单执行】方式");
             return false;
@@ -287,6 +281,26 @@ public class SaleOrderInfoFragment extends HandledFragment {
         if(order.SaleType==null||order.SaleType.getId()==0){
             ShowDialog.WarningDialog(getActivity(), "请选择正确的【销售方式】");
             return false;
+        }
+        if(!salesOrderInterface.verifySalesOrderInfo()){
+            return false;
+        }
+
+        salesOrderInterface.getSalesOrder().SalesGoods = salesOrderInterface.returnSaleGoodsList();
+
+        String remark=((AutoCompleteTextView) rootView.findViewById(R.id.et_sales_order_info_remark)).getText().toString();
+        String amount1 = ((EditText) rootView.findViewById(R.id.et_sales_order_info_amount1)).getText().toString();
+        String amount2 = ((EditText) rootView.findViewById(R.id.et_sales_order_info_amount2)).getText().toString();
+        String amount3 = ((EditText) rootView.findViewById(R.id.et_sales_order_info_amount3)).getText().toString();
+        salesOrderInterface.getSalesOrder().setRemark(remark);
+        if (!amount1.equals("")) {
+            salesOrderInterface.getSalesOrder().setDyeFee(Double.parseDouble(amount1));
+        }
+        if (!amount2.equals("")) {
+            salesOrderInterface.getSalesOrder().setOtherFee(Double.parseDouble(amount2));
+        }
+        if (!amount3.equals("")) {
+            salesOrderInterface.getSalesOrder().setEarnestMoney(Double.parseDouble(amount3));
         }
 
         return true;

@@ -71,6 +71,16 @@ public class SelectInventoryFragment extends HandledFragment {
         // Required empty public constructor
     }
 
+    @Override
+    protected int getLayoutId() {
+        return R.layout.fragment_select_inventory;
+    }
+
+    @Override
+    protected void setToolbarTitleText() {
+        super.getToolbarTitle().setText("选择库存");
+    }
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -123,7 +133,7 @@ public class SelectInventoryFragment extends HandledFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_select_inventory, container, false);
+        View view = super.onCreateView(inflater,container,savedInstanceState);
         layoutSelectInventory = view.findViewById(R.id.select_inventory_layout);
         lvSelectStockGroup = (ListView) view.findViewById(R.id.select_stock_group_lv);
         tvSelectedStockGroup = (TextView) view.findViewById(R.id.select_inventory_value_selected_stock);
@@ -162,6 +172,7 @@ public class SelectInventoryFragment extends HandledFragment {
                 currentGoods.SelectedInventory =new ArrayList<>(InventoryList);
 
                 currentGoods.setQty(Double.parseDouble(tvAllSelectStockQty.getText().toString()));
+                currentGoods.setPrice(0);
 
 //                String selectedStockGroupName = tvSelectedStockGroup.getText().toString();
 //                if (currentGoods.getQty() > 0) {

@@ -3,11 +3,14 @@ package com.jimei.k3wise_mobile.Util;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
+import android.support.annotation.Nullable;
 
 import com.jimei.k3wise_mobile.Component.AudioPlayer;
+import com.jimei.k3wise_mobile.Component.WebserviceLoader;
 
 /**
  * Created by lee on 2016/9/9.
@@ -85,5 +88,41 @@ public class ShowDialog {
                     }
                 })
                 .show();
+    }
+
+    static public ProgressDialog showLoaderProgressDialog(final Context context, final WebserviceLoader webserviceLoader, final boolean allowDismiss){
+        final ProgressDialog progressDialog = new ProgressDialog(context){
+            @Override
+            public void onBackPressed() {
+                if(allowDismiss) {
+                    this.dismiss();
+                    if (Build.VERSION.SDK_INT >= 16) {
+                        webserviceLoader.cancelLoadInBackground();
+                    } else {
+                        webserviceLoader.cancelLoad();
+                    }
+                }
+            }
+        };
+        progressDialog.setTitle("等待");
+        progressDialog.setMessage("数据传输中...请稍后...");
+        progressDialog.setCancelable(false);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+
+        if(allowDismiss) {
+            progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "取消", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    progressDialog.onBackPressed();
+                }
+            });
+        }
+        progressDialog.show();
+
+        return progressDialog;
+    }
+
+    static public ProgressDialog showLoaderProgressDialog(Context context, final WebserviceLoader webserviceLoader){
+        return showLoaderProgressDialog(context,webserviceLoader,true);
     }
 }

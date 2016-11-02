@@ -14,7 +14,9 @@
             android:layout_height="match_parent"
             android:divider="@drawable/dividing_line"
             android:orientation="vertical"
-            android:showDividers="middle">
+            android:showDividers="middle"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
 
             <LinearLayout
                 android:id="@+id/layout_sales_order_info_client"
@@ -247,7 +249,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="提交订单"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    android:visibility="gone"/>
 
             </LinearLayout>
 

@@ -13,7 +13,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.view.GestureDetector;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
@@ -22,12 +24,13 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jimei.k3wise_mobile.BO.LoginUser;
 import com.jimei.k3wise_mobile.Component.AudioPlayer;
-import com.jimei.k3wise_mobile.Util.CrashHandler;
+import com.jimei.k3wise_mobile.Component.BaseAppCompatActivity;
 import com.jimei.k3wise_mobile.Util.KingdeeK3WiseWebServiceHelper;
 import com.jimei.k3wise_mobile.Component.ProgressView;
 import com.jimei.k3wise_mobile.Component.WebserviceTask;
@@ -39,7 +42,7 @@ import org.json.JSONObject;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity/* implements LoaderCallbacks<Cursor>*/ {
+public class LoginActivity extends BaseAppCompatActivity  /* implements LoaderCallbacks<Cursor>*/ {
 
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -71,9 +74,18 @@ public class LoginActivity extends AppCompatActivity/* implements LoaderCallback
     }
 
     @Override
+    protected int getLayoutId() {
+        return R.layout.activity_login;
+    }
+
+    @Override
+    protected boolean isShowBacking() {
+        return false;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
 
         AudioPlayer.buildSoundPool(LoginActivity.this);
 
@@ -135,6 +147,7 @@ public class LoginActivity extends AppCompatActivity/* implements LoaderCallback
         });
 
         mLoginFormView = findViewById(R.id.login_form);
+
         mProgressView = (ProgressView) findViewById(R.id.login_progress);
 
         mUserView.setText(PreferencesHelper.Get(this,"LoginUser"));

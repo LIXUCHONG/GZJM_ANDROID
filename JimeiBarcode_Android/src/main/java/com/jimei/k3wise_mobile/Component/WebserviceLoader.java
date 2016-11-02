@@ -32,7 +32,22 @@ public class WebserviceLoader extends AsyncTaskLoader<Message> {
         webMethod = method;
         methodParas = Paras;
 
-        Instance=this;
+        Instance = this;
+    }
+
+    public WebserviceLoader(Context context) {
+        super(context);
+        this.context = context;
+
+        Instance = this;
+    }
+
+    public void setWebMethod(String webMethod) {
+        this.webMethod = webMethod;
+    }
+
+    public void setMethodParas(JSONObject methodParas) {
+        this.methodParas = methodParas;
     }
 
     @Override
@@ -48,6 +63,11 @@ public class WebserviceLoader extends AsyncTaskLoader<Message> {
 //            showProgress();
             messageResult = KingdeeK3WiseWebServiceHelper.Invoke(context, webMethod, methodParas);
 //            progressDialog.dismiss();
+
+            if (messageResult.what == KingdeeK3WiseWebServiceHelper.INVOKE_SUCCESS) {
+                AudioPlayer.playSuccessSound();
+            }
+
             return messageResult;
         } catch (Exception ex) {
             Message msg = new Message();
@@ -57,27 +77,8 @@ public class WebserviceLoader extends AsyncTaskLoader<Message> {
         }
     }
 
-    private void showProgress(){
-        progressDialog = new ProgressDialog(context);
-        progressDialog.setTitle("等待");
-        progressDialog.setMessage("读取数据...请等待");
-        progressDialog.setCancelable(false);
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "取消", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                if(Build.VERSION.SDK_INT>=16) {
-                    if(!WebserviceLoader.super.isLoadInBackgroundCanceled()) {
-                        WebserviceLoader.super.cancelLoadInBackground();
-                    }
-                }else {
-                    WebserviceLoader.super.cancelLoad();
-                }
-
-                messageResult=null;
-            }
-        });
-        progressDialog.show();
+    @Override
+    public void onCanceled(Message data) {
+        messageResult = null;
     }
 }

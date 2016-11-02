@@ -123,8 +123,6 @@ public class UpdateHelper {
                     break;
             }
         }
-
-        ;
     };
 
     private boolean checkUpdate() {

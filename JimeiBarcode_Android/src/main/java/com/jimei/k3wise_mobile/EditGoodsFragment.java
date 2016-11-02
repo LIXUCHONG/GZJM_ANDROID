@@ -1,13 +1,10 @@
 package com.jimei.k3wise_mobile;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.Loader;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +21,8 @@ import com.jimei.k3wise_mobile.Util.CommonHelper;
 import com.jimei.k3wise_mobile.Util.KingdeeK3WiseWebServiceHelper;
 import com.jimei.k3wise_mobile.Util.ShowDialog;
 
+import org.json.JSONObject;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,7 +32,7 @@ import com.jimei.k3wise_mobile.Util.ShowDialog;
  * Use the {@link EditGoodsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class EditGoodsFragment extends HandledFragment/* implements android.support.v4.app.LoaderManager.LoaderCallbacks<Message> */{
+public class EditGoodsFragment extends HandledFragment implements android.support.v4.app.LoaderManager.LoaderCallbacks<Message> {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String Operation = "param1";
@@ -58,11 +57,20 @@ public class EditGoodsFragment extends HandledFragment/* implements android.supp
     private Button btnDel;
     private ImageView viewImage;
 
-
     private SalesOrderInterface salesOrderInterface;
 
     public EditGoodsFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.fragment_edit_goods;
+    }
+
+    @Override
+    protected void setToolbarTitleText() {
+        super.getToolbarTitle().setText("确认商品");
     }
 
     /**
@@ -100,7 +108,7 @@ public class EditGoodsFragment extends HandledFragment/* implements android.supp
                 } catch (Exception ex) {
                     return;
                 }
-            }else{
+            } else {
                 salesOrderInterface.setEditCurrentGoods(null);
             }
         }
@@ -113,7 +121,7 @@ public class EditGoodsFragment extends HandledFragment/* implements android.supp
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_edit_goods, container, false);
+        View view = super.onCreateView(inflater, container, savedInstanceState);
 
         viewNumber = (TextView) view.findViewById(R.id.edit_goods_value_number);
         viewName = (TextView) view.findViewById(R.id.edit_goods_value_name);
@@ -122,7 +130,7 @@ public class EditGoodsFragment extends HandledFragment/* implements android.supp
         viewQty = (EditText) view.findViewById(R.id.edit_goods_value_qty);
 
         viewImage = (ImageView) view.findViewById(R.id.edit_goods_image);
-//        getLoaderManager().initLoader(0,null,this);
+        getLoaderManager().initLoader(0, null, this);
 
         Button btnSelectInventory = (Button) view.findViewById(R.id.select_inventory_select_inventory_btn);
         btnSelectInventory.setOnClickListener(new View.OnClickListener() {
@@ -191,53 +199,64 @@ public class EditGoodsFragment extends HandledFragment/* implements android.supp
         salesOrderInterface = null;
     }
 
-//    @Override
-//    public Loader<Message> onCreateLoader(int id, Bundle args) {
-//        Loader<Message> result=null;
-//
-//        try {
-//            if(id==0) {
-//                String method = "GetGoodsImage";
-//                JSONObject jsonParas = new JSONObject();
-//                jsonParas.put("itemid", currentGoods.getItemID());
-//                result = new WebserviceLoader(getActivity(), method, jsonParas);
-//            }
-//        }catch (Exception ex){
-//            ShowDialog.ExceptionDialog(getActivity(),ex.getMessage());
-//        }
-//
-//        return result;
-//    }
-//
-//    @Override
-//    public void onLoaderReset(Loader<Message> loader) {
-//
-//    }
-//
-//    @Override
-//    public void onLoadFinished(Loader<Message> loader, Message data) {
-//        if(loader!=null) {
-//            switch (data.what) {
-//                case KingdeeK3WiseWebServiceHelper.INVOKE_SUCCESS:
-//                    try {
-//                        JSONArray jsonArray = new JSONArray(data.obj.toString());
-//                        String imageStr=jsonArray.getJSONObject(0).getString("Value");
-//                        if (!imageStr.equals("")) {
-//                            viewImage.setImageBitmap(getBitmapFromHex(imageStr));
-//                        }
-////                        viewImage.setImageBitmap(getBitmapFromHex(data.obj.toString()));
-//                    } catch (Exception ex) {
-//                        ShowDialog.ExceptionDialog(getActivity(), ex.getMessage());
-//                        return;
-//                    }
-//                    break;
-//                case KingdeeK3WiseWebServiceHelper.INVOKE_NULL:
-//                    ShowDialog.WarningDialog(getActivity(), "读取数据失败");
-//                    break;
-//            }
-//        }
-//    }
-//
+    @Override
+    public boolean onBackPressed() {
+        return true;
+    }
+
+    @Override
+    public Loader<Message> onCreateLoader(int id, Bundle args) {
+        final WebserviceLoader loader = new WebserviceLoader(getActivity());
+        currentLoaderId = id;
+        try {
+            if (id == 0) {
+                String method = "GetGoodsClientPrice";
+                JSONObject jsonParas = new JSONObject();
+                jsonParas.put("itemid", currentGoods.getItemID());
+                jsonParas.put("custNum", salesOrderInterface.getSalesOrder().Client.getNumber());
+                loader.setWebMethod(method);
+                loader.setMethodParas(jsonParas);
+            }
+        } catch (Exception ex) {
+            ShowDialog.ExceptionDialog(getActivity(), ex.getMessage());
+        }
+
+        progressDialog = ShowDialog.showLoaderProgressDialog(getActivity(), loader);
+
+        return loader;
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Message> loader) {
+
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Message> loader, Message data) {
+        progressDialog.dismiss();
+        try {
+            if (loader != null && data != null) {
+                switch (data.what) {
+                    case KingdeeK3WiseWebServiceHelper.INVOKE_SUCCESS:
+                        if (loader.getId() == 0) {
+                            currentGoods.setPrice(Double.parseDouble(data.obj.toString()));
+                        }
+                        break;
+                    case KingdeeK3WiseWebServiceHelper.INVOKE_NULL:
+                        ShowDialog.WarningDialog(getActivity(), "读取数据失败");
+                        break;
+                    case KingdeeK3WiseWebServiceHelper.EXCEPTION:
+                        ShowDialog.ExceptionDialog(getActivity(), data.obj.toString());
+                        break;
+                }
+            }
+        } catch (Exception ex) {
+            ShowDialog.ExceptionDialog(getActivity(), ex.getMessage());
+        } finally {
+            getLoaderManager().destroyLoader(loader.getId());
+        }
+    }
+
 //    private Bitmap getBitmapFromHex(String imageStr) {
 //        byte[] bytes = Base64.decode(imageStr,Base64.NO_CLOSE);
 ////        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);

@@ -16,19 +16,30 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.jimei.k3wise_mobile.BO.LoginUser;
+import com.jimei.k3wise_mobile.Component.BaseAppCompatActivity;
 import com.jimei.k3wise_mobile.Util.ShowDialog;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends BaseAppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    View operation_menu_show=null;
+    View operation_menu_show = null;
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_main;
+    }
+
+    @Override
+    protected boolean isShowBacking() {
+        return false;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+//        setContentView(getLayoutId());
+        Toolbar toolbar = getToolbar();
+//        setSupportActionBar(toolbar);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -55,13 +66,13 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
-            String dlgMessage = String.format("当前用户 [%s:%s]\n是否退出登录", LoginUser.Number, LoginUser.Name);
-            ShowDialog.YesNoDialog(this, dlgMessage, BackPressed(), null);
         }
+
+        String dlgMessage = String.format("当前用户 [%s:%s]\n是否退出登录", LoginUser.Number, LoginUser.Name);
+        ShowDialog.YesNoDialog(this, dlgMessage, BackPressed(), null);
     }
 
-    Runnable BackPressed(){
+    Runnable BackPressed() {
         return new Runnable() {
             @Override
             public void run() {
@@ -98,16 +109,18 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if((operation_menu_show!=null&&operation_menu_show.getVisibility()==View.VISIBLE)) {
+        if ((operation_menu_show != null && operation_menu_show.getVisibility() == View.VISIBLE)) {
             operation_menu_show.setVisibility(View.GONE);
         }
 
-        if(id==R.id.nav_stores){
+        if (id == R.id.nav_stores) {
             operation_menu_show = findViewById(R.id.stores_operations_main);
             operation_menu_show.setVisibility(View.VISIBLE);
-        } else if(id==R.id.nav_common){
+        } else if (id == R.id.nav_common) {
             operation_menu_show = findViewById(R.id.common_operations_main);
             operation_menu_show.setVisibility(View.VISIBLE);
+        } else if (id == R.id.nav_quit) {
+            onBackPressed();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -120,15 +133,13 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(this, SaleActivity.class);
             startActivity(intent);
         } else if (view.getId() == R.id.inventory_btn) {
-            ShowDialog.MessageDialog(MainActivity.this, "库存查询",null);
+            ShowDialog.MessageDialog(MainActivity.this, "库存查询", null);
         }
     }
 
-    public class ReceiveBroadCast extends BroadcastReceiver
-    {
+    public class ReceiveBroadCast extends BroadcastReceiver {
         @Override
-        public void onReceive(Context context, Intent intent)
-        {
+        public void onReceive(Context context, Intent intent) {
             MainActivity.this.finish();
         }
     }

@@ -5,127 +5,134 @@
     android:background="#888888">
 
     <LinearLayout
-        android:id="@+id/select_inventory_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#F6F6F6"
         android:orientation="vertical">
 
+        <include layout="@layout/toolbar_layout" />
+
         <LinearLayout
+            android:id="@+id/select_inventory_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:background="#F6F6F6"
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/select_inventory_value_selected_stock"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:text="点击查看库存-->"
-                android:textSize="20sp"
-                android:textColor="@color/black_overlay"/>
-
-            <Button
-                android:id="@+id/select_inventory_select_stock_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="仓库组"
-                android:textSize="20sp" />
-
-            <Button
-                android:id="@+id/select_inventory_save_inventory_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="保存"
-                android:textSize="20sp" />
-
-        </LinearLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
-
-            <ListView
-                android:id="@+id/select_inventory_lv"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#FFFFFF" />
-
-            <com.jimei.k3wise_mobile.Component.ProgressView
-                android:id="@+id/select_inventory_progress"
-                style="?android:attr/progressBarStyleLarge"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:visibility="gone" />
+                android:orientation="horizontal">
 
-        </FrameLayout>
+                <TextView
+                    android:id="@+id/select_inventory_value_selected_stock"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:text="点击查看库存-->"
+                    android:textColor="@color/black_overlay"
+                    android:textSize="20sp" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:orientation="horizontal">
+                <Button
+                    android:id="@+id/select_inventory_select_stock_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="仓库组"
+                    android:textSize="20sp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:padding="5dp"
-                android:background="#9fc5e8"
-                android:textSize="20sp"
-                android:text="合计"/>
+                <Button
+                    android:id="@+id/select_inventory_save_inventory_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="保存"
+                    android:textSize="20sp" />
 
-            <TextView
-                android:id="@+id/select_inventory_value_stock_qty_all_select"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:layout_weight="1"
-                android:textSize="18sp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/select_inventory_title_stock_qty"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:padding="5dp"
-                android:textSize="20sp"
-                android:text="库存："
-                android:textColor="@color/bo_title"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
 
-            <TextView
-                android:id="@+id/select_inventory_value_stock_qty"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:textSize="18sp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+                <ListView
+                    android:id="@+id/select_inventory_lv"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#FFFFFF" />
 
-            <TextView
-                android:id="@+id/select_inventory_title_stock_qty_selected"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:padding="5dp"
-                android:textSize="20sp"
-                android:text="选中："
-                android:textColor="@color/bo_title"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+                <com.jimei.k3wise_mobile.Component.ProgressView
+                    android:id="@+id/select_inventory_progress"
+                    style="?android:attr/progressBarStyleLarge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="gone" />
 
-            <TextView
-                android:id="@+id/select_inventory_value_stock_qty_selected"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:textSize="18sp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+            </FrameLayout>
 
-            <!--<TextView-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="#9fc5e8"
+                    android:padding="5dp"
+                    android:text="合计"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/select_inventory_value_stock_qty_all_select"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/select_inventory_title_stock_qty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:padding="5dp"
+                    android:text="库存："
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textColor="@color/bo_title"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/select_inventory_value_stock_qty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/select_inventory_title_stock_qty_selected"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:padding="5dp"
+                    android:text="选中："
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textColor="@color/bo_title"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/select_inventory_value_stock_qty_selected"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textSize="18sp" />
+
+                <!--<TextView-->
                 <!--android:id="@+id/select_inventory_title_stock_qty"-->
                 <!--android:layout_width="wrap_content"-->
                 <!--android:layout_height="wrap_content"-->
@@ -133,7 +140,7 @@
                 <!--android:textColor="@color/bo_title"-->
                 <!--android:textSize="20sp" />-->
 
-            <!--<TextView-->
+                <!--<TextView-->
                 <!--android:id="@+id/select_inventory_value_stock_qty"-->
                 <!--android:layout_width="match_parent"-->
                 <!--android:layout_height="wrap_content"-->
@@ -141,7 +148,7 @@
                 <!--android:textColor="@color/bo_value"-->
                 <!--android:textSize="20sp" />-->
 
-            <!--<TextView-->
+                <!--<TextView-->
                 <!--android:id="@+id/select_inventory_title_stock_qty_selected"-->
                 <!--android:layout_width="wrap_content"-->
                 <!--android:layout_height="wrap_content"-->
@@ -149,13 +156,15 @@
                 <!--android:textColor="@color/bo_title"-->
                 <!--android:textSize="20sp" />-->
 
-            <!--<TextView-->
+                <!--<TextView-->
                 <!--android:id="@+id/select_inventory_value_stock_qty_selected"-->
                 <!--android:layout_width="match_parent"-->
                 <!--android:layout_height="wrap_content"-->
                 <!--android:layout_weight="1"-->
                 <!--android:textColor="@color/bo_value"-->
                 <!--android:textSize="20sp" />-->
+
+            </LinearLayout>
 
         </LinearLayout>
 

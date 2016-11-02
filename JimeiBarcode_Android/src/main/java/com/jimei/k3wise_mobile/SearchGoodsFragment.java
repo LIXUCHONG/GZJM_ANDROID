@@ -8,6 +8,7 @@ import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,6 +18,7 @@ import android.widget.SimpleAdapter;
 import com.jimei.k3wise_mobile.BO.Client;
 import com.jimei.k3wise_mobile.BO.Goods;
 import com.jimei.k3wise_mobile.BO.LoginUser;
+import com.jimei.k3wise_mobile.Component.HandledFragment;
 import com.jimei.k3wise_mobile.Component.ProgressView;
 import com.jimei.k3wise_mobile.Component.WebserviceTask;
 import com.jimei.k3wise_mobile.Interface.SalesOrderInterface;
@@ -30,10 +32,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static android.content.Context.INPUT_METHOD_SERVICE;
+
 /**
  * Created by lee on 2016/9/14.
  */
-public class SearchGoodsFragment extends Fragment {
+public class SearchGoodsFragment extends HandledFragment {
     private EditText keyInputView;
     private SearchGoodsTask mTask;
     private ProgressView mProgressView;
@@ -45,12 +49,31 @@ public class SearchGoodsFragment extends Fragment {
     private GetGoodsClientPriceTask getGoodsClientPriceTask;
     private Goods selectedGoods;
 
+    @Override
+    protected int getLayoutId() {
+        return R.layout.fragment_search_goods;
+    }
+
+    @Override
+    protected boolean isShowToolBar() {
+        return false;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_search_goods, container, false);
+        View view = super.onCreateView(inflater,container,savedInstanceState);
         mSearchGoodsView = view.findViewById(R.id.search_goods_form);
         keyInputView = (EditText) view.findViewById(R.id.key_input_edit_text);
+        keyInputView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus) {
+                    InputMethodManager imm = (InputMethodManager) (getActivity().getSystemService(INPUT_METHOD_SERVICE));
+                    imm.hideSoftInputFromWindow(keyInputView.getWindowToken(), 0);
+                }
+            }
+        });
+
         mProgressView = (ProgressView) view.findViewById(R.id.search_goods_progress);
         mSearchGoodsListView = (ListView) view.findViewById(R.id.searched_goods_lv);
 
@@ -59,7 +82,6 @@ public class SearchGoodsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 String itemName_ke = keyInputView.getText().toString();
-
                 showProgress(true);
                 JSONObject jParas = new JSONObject();
                 try {
@@ -187,15 +209,16 @@ public class SearchGoodsFragment extends Fragment {
                     Client client=salesOrderInterface.getSalesOrder().Client;
                     if (salesOrderInterface.getSalesOrder().isGetClientGoodsPrice()) {
                         if(client != null && client.getNumber() != null && !client.getNumber().equals("")){
-                            try {
-                                JSONObject jsonObject = new JSONObject();
-                                jsonObject.put("itemid", selectedGoods.getItemID());
-                                jsonObject.put("custNum", client.getNumber());
-                                getGoodsClientPriceTask=new GetGoodsClientPriceTask(getActivity(),"GetGoodsClientPrice",jsonObject);
-                                getGoodsClientPriceTask.execute();
-                            }catch (Exception ex){
-                                ShowDialog.ExceptionDialog(getActivity(),ex.getMessage());
-                            }
+                            showEditGoodsFragment(selectedGoods);
+//                            try {
+//                                JSONObject jsonObject = new JSONObject();
+//                                jsonObject.put("itemid", selectedGoods.getItemID());
+//                                jsonObject.put("custNum", client.getNumber());
+//                                getGoodsClientPriceTask=new GetGoodsClientPriceTask(getActivity(),"GetGoodsClientPrice",jsonObject);
+//                                getGoodsClientPriceTask.execute();
+//                            }catch (Exception ex){
+//                                ShowDialog.ExceptionDialog(getActivity(),ex.getMessage());
+//                            }
                         }else {
                             selectedGoods.setPrice(0);
                             showEditGoodsFragment(selectedGoods);
