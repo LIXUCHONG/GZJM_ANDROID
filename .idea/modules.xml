@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/GZJM_ANDROID.iml" filepath="$PROJECT_DIR$/GZJM_ANDROID.iml" />
       <module fileurl="file://$PROJECT_DIR$/JimeiBarcode_Android/JimeiBarcode_Android.iml" filepath="$PROJECT_DIR$/JimeiBarcode_Android/JimeiBarcode_Android.iml" />
-      <module fileurl="file://$PROJECT_DIR$/MyApplication.iml" filepath="$PROJECT_DIR$/MyApplication.iml" />
     </modules>
   </component>
 </project>
