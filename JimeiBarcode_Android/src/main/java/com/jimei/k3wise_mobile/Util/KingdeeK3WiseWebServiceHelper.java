@@ -77,6 +77,7 @@ public class KingdeeK3WiseWebServiceHelper {
 
         JSONObject jObj = new JSONObject();
         jObj.put("method", method);
+        jObj.put("Platform", "Android");
         jObj.put("versionCode", CommonHelper.getVersionCode());
         jObj.put("versionName", CommonHelper.getVersionName());
         jObj.put("userid", LoginUser.Id);

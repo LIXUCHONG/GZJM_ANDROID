@@ -2,14 +2,14 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion "24.0.0"
+    buildToolsVersion '25.0.0'
 
     defaultConfig {
         applicationId "com.jimei.k3wise_mobile"
         minSdkVersion 15
         targetSdkVersion 24
-        versionCode 3
-        versionName "2.16.1102.00"
+        versionCode 7
+        versionName "2.17.304.00"
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {

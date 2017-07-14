@@ -172,7 +172,7 @@ public class SelectInventoryFragment extends HandledFragment {
                 currentGoods.SelectedInventory =new ArrayList<>(InventoryList);
 
                 currentGoods.setQty(Double.parseDouble(tvAllSelectStockQty.getText().toString()));
-                currentGoods.setPrice(0);
+//                currentGoods.setPrice(0);
 
 //                String selectedStockGroupName = tvSelectedStockGroup.getText().toString();
 //                if (currentGoods.getQty() > 0) {

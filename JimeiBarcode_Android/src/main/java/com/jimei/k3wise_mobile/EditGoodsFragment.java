@@ -130,7 +130,9 @@ public class EditGoodsFragment extends HandledFragment implements android.suppor
         viewQty = (EditText) view.findViewById(R.id.edit_goods_value_qty);
 
         viewImage = (ImageView) view.findViewById(R.id.edit_goods_image);
-        getLoaderManager().initLoader(0, null, this);
+        if (currentOperation == this.ADD) {
+            getLoaderManager().initLoader(0, null, this);
+        }
 
         Button btnSelectInventory = (Button) view.findViewById(R.id.select_inventory_select_inventory_btn);
         btnSelectInventory.setOnClickListener(new View.OnClickListener() {
@@ -240,6 +242,7 @@ public class EditGoodsFragment extends HandledFragment implements android.suppor
                     case KingdeeK3WiseWebServiceHelper.INVOKE_SUCCESS:
                         if (loader.getId() == 0) {
                             currentGoods.setPrice(Double.parseDouble(data.obj.toString()));
+                            bindGoodsInfo();
                         }
                         break;
                     case KingdeeK3WiseWebServiceHelper.INVOKE_NULL:
@@ -267,8 +270,9 @@ public class EditGoodsFragment extends HandledFragment implements android.suppor
         viewNumber.setText(currentGoods.getNumber());
         viewName.setText(currentGoods.getName());
         viewColor.setText(currentGoods.getModel());
-
-        viewPrice.setText(currentGoods.getPrice() == 0 ? "" : Double.toString(currentGoods.getPrice()));
+        if(viewPrice.getText().toString().equals("")) {
+            viewPrice.setText(currentGoods.getPrice() == 0 ? "" : Double.toString(currentGoods.getPrice()));
+        }
         viewQty.setText(currentGoods.getQty() == 0 ? "" : Double.toString(currentGoods.getQty()));
     }
 
