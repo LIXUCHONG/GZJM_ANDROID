@@ -11,19 +11,19 @@ import com.jimei.k3wise_mobile.BO.Properties.SaleType;
  * Created by lee on 2016/10/1.
  */
 
-public class SalesOrder {
+public class SalesOrder extends DocumentBill {
 
-    public ShippingType ShippingType=null;
-    public PayType PayType=null;
-    public SaleType SaleType=null;
-    public Client Client=null;
+    public ShippingType ShippingType = null;
+    public PayType PayType = null;
+    public SaleType SaleType = null;
+    public Client Client = null;
     private String Remark;
-    private double DyeFee =0;
-    private double OtherFee =0;
-    private double EarnestMoney =0;
+    private double DyeFee = 0;
+    private double OtherFee = 0;
+    private double EarnestMoney = 0;
     private boolean isGetClientGoodsPrice;
 
-    public List<Goods> SalesGoods=new ArrayList<>();
+    private List<SaleGoods> SalesGoods = null;
 
     public String getRemark() {
         return Remark;
@@ -55,6 +55,18 @@ public class SalesOrder {
 
     public void setOtherFee(double otherFee) {
         OtherFee = otherFee;
+    }
+
+    public List<SaleGoods> getSalesGoods() {
+        return SalesGoods != null ? SalesGoods : (new ArrayList<SaleGoods>());
+    }
+
+    public void setSalesGoods(List salesGoods) {
+        SalesGoods = salesGoods;
+//        getGoodsRecords().clear();
+//        for (SaleGoods i:SalesGoods) {
+//            GoodsRecords.add(i);
+//        }
     }
 
     public boolean isGetClientGoodsPrice() {

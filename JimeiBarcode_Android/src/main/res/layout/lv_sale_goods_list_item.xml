@@ -1,150 +1,229 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content">
 
-        <Button
-            android:id="@+id/item_sale_goods_list_cancel_edit"
-            android:layout_width="60dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#666666"
-            android:gravity="center"
-            android:text="取消"
-            android:textColor="#ffffff"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:visibility="gone" />
+            android:orientation="horizontal">
 
-
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_margin="3dp">
-
-            <TextView
-                android:id="@+id/item_sale_goods_list_amount"
-                android:layout_width="wrap_content"
+            <Button
+                android:id="@+id/item_sale_goods_list_cancel_edit"
+                android:layout_width="60dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                android:textSize="20sp" />
+                android:background="#666666"
+                android:gravity="center"
+                android:text="取消"
+                android:textColor="#ffffff"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
 
-            <TextView
-                android:id="@+id/item_sale_goods_list_amount_symbol"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="3dp"
-                android:layout_toLeftOf="@+id/item_sale_goods_list_amount"
-                android:text="￥"
-                android:textSize="16sp" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toLeftOf="@+id/item_sale_goods_list_amount_symbol"
-                android:gravity="left"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/item_sale_goods_list_qty"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                    android:textSize="15sp" />
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="3dp"
+                android:layout_weight="1">
 
                 <LinearLayout
+                    android:id="@+id/item_sale_goods_list_brokerage_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="left"
+                    android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/item_sale_goods_list_price_symbol"
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="￥"
-                        android:textSize="12sp" />
+                        android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/item_sale_goods_list_price"
+                        <TextView
+                            android:id="@+id/item_sale_goods_list_price_symbol"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="￥"
+                            android:textSize="10sp" />
+
+                        <TextView
+                            android:id="@+id/item_sale_goods_list_price"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                            android:textSize="14sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                        android:textSize="15sp" />
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/item_sale_goods_list_brokerage_symbol"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="￥"
+                            android:textSize="10sp" />
+
+                        <TextView
+                            android:id="@+id/item_sale_goods_list_brokerage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                            android:textColor="#FF0000"
+                            android:textSize="14sp" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
-            </LinearLayout>
+                <TextView
+                        android:id="@+id/item_sale_goods_list_qty"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/item_sale_goods_list_brokerage_layout"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        android:textSize="18sp" />
 
-            <TextView
-                android:id="@+id/item_sale_goods_list_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                android:textSize="14sp" />
+                <TextView
+                    android:id="@+id/item_sale_goods_list_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textSize="14sp" />
 
-            <TextView
-                android:id="@+id/item_sale_goods_list_no"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/item_sale_goods_list_name"
-                android:maxLines="1"
-                android:textSize="14sp" />
+                <TextView
+                    android:id="@+id/item_sale_goods_list_no"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/item_sale_goods_list_name"
+                    android:maxLines="1"
+                    android:textSize="14sp" />
 
-            <TextView
-                android:id="@+id/item_sale_goods_list_model"
-                android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/item_sale_goods_list_model"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/item_sale_goods_list_name"
+                    android:layout_marginLeft="5dp"
+                    android:layout_toRightOf="@+id/item_sale_goods_list_no"
+                    android:maxLines="1"
+                    android:textSize="14sp" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/item_sale_goods_list_edit"
+                android:layout_width="60dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/item_sale_goods_list_name"
-                android:layout_toRightOf="@+id/item_sale_goods_list_no"
-                android:layout_marginLeft="5dp"
-                android:maxLines="1"
-                android:textSize="14sp" />
+                android:background="#3c78d8"
+                android:gravity="center"
+                android:text="编辑"
+                android:textColor="#ffffff"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/item_sale_goods_list_del"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:background="#cc4125"
+                android:gravity="center"
+                android:text="删除"
+                android:textColor="#ffffff"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="3dp"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/item_sale_goods_list_brokerageAmount_symbol"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="3dp"
+            android:layout_alignParentLeft="true"
+            android:text="佣："
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/item_sale_goods_list_brokerageAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/item_sale_goods_list_brokerageAmount_symbol"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="#FF0000"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/item_sale_goods_list_noBrokerageAmount_symbol"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/item_sale_goods_list_brokerageAmount"
+            android:text="除佣："
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/item_sale_goods_list_noBrokerageAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/item_sale_goods_list_noBrokerageAmount_symbol"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="#0000FF"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/item_sale_goods_list_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/item_sale_goods_list_amount_symbol"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="3dp"
+            android:layout_toLeftOf="@+id/item_sale_goods_list_amount"
+            android:text="合："
+            android:textSize="15sp" />
 
         </RelativeLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_gravity="right">
-
-        <Button
-            android:id="@+id/item_sale_goods_list_edit"
-            android:layout_width="60dp"
-            android:layout_height="wrap_content"
-            android:background="#3c78d8"
-            android:gravity="center"
-            android:text="编辑"
-            android:textColor="#ffffff"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:visibility="gone" />
-
-        <Button
-            android:id="@+id/item_sale_goods_list_del"
-            android:layout_width="60dp"
-            android:layout_height="wrap_content"
-            android:background="#cc4125"
-            android:gravity="center"
-            android:text="删除"
-            android:textColor="#ffffff"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:visibility="gone" />
-
-    </LinearLayout>
-
-
-</FrameLayout>
+</LinearLayout>

@@ -1,20 +1,24 @@
 package com.jimei.k3wise_mobile;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.Loader;
+import android.text.Editable;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.jimei.k3wise_mobile.BO.Goods;
+import com.jimei.k3wise_mobile.BO.SaleGoods;
 import com.jimei.k3wise_mobile.Component.HandledFragment;
+import com.jimei.k3wise_mobile.Component.TextViewWatcher;
 import com.jimei.k3wise_mobile.Component.WebserviceLoader;
 import com.jimei.k3wise_mobile.Interface.SalesOrderInterface;
 import com.jimei.k3wise_mobile.Util.CommonHelper;
@@ -22,6 +26,10 @@ import com.jimei.k3wise_mobile.Util.KingdeeK3WiseWebServiceHelper;
 import com.jimei.k3wise_mobile.Util.ShowDialog;
 
 import org.json.JSONObject;
+
+import java.math.BigDecimal;
+
+import uk.co.senab.photoview.PhotoView;
 
 
 /**
@@ -43,19 +51,25 @@ public class EditGoodsFragment extends HandledFragment implements android.suppor
 
     // TODO: Rename and change types of parameters
     private int currentOperation;
-    private Goods currentGoods;
-    private Goods realGoods;
+    private SaleGoods currentSaleGoods;
+    private SaleGoods realSaleGoods;
 
     //    View view =null;
     private TextView viewNumber;
     private TextView viewName;
     private TextView viewColor;
     private EditText viewPrice;
+    private TextView viewPriceAmount;
+    private EditText viewBrokerage;
+    private EditText viewBrokerageAmount;
     private EditText viewQty;
     private Button btnAdd;
     private Button btnEdit;
     private Button btnDel;
-    private ImageView viewImage;
+    private PhotoView viewImage;
+
+    private boolean canCalculateBrokerage;
+    private boolean canLoadCurrentGoodsQty;
 
     private SalesOrderInterface salesOrderInterface;
 
@@ -82,7 +96,7 @@ public class EditGoodsFragment extends HandledFragment implements android.suppor
      * @return A new instance of fragment EditGoodsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static EditGoodsFragment newInstance(int operation, Goods currentGoods) {
+    public static EditGoodsFragment newInstance(int operation, SaleGoods currentGoods) {
         EditGoodsFragment fragment = new EditGoodsFragment();
         Bundle args = new Bundle();
         args.putInt(Operation, operation);
@@ -96,15 +110,15 @@ public class EditGoodsFragment extends HandledFragment implements android.suppor
     public void onCreate(Bundle savedInstanceState) {
         if (getArguments() != null) {
             currentOperation = getArguments().getInt(Operation);
-            currentGoods = (Goods) getArguments().getSerializable(CurrentGoods);
+            currentSaleGoods = (SaleGoods) getArguments().getSerializable(CurrentGoods);
 
             if (currentOperation == this.EDIT) {
                 try {
-                    Goods tmpGoods = (Goods) CommonHelper.deepClone(currentGoods);
-                    realGoods = currentGoods;
-                    currentGoods = tmpGoods;
-                    salesOrderInterface.setCurrentGoods(currentGoods);
-                    salesOrderInterface.setEditCurrentGoods(realGoods);
+                    SaleGoods tmpGoods = (SaleGoods) CommonHelper.deepClone(currentSaleGoods);
+                    realSaleGoods = currentSaleGoods;
+                    currentSaleGoods = tmpGoods;
+                    salesOrderInterface.setCurrentGoods(currentSaleGoods);
+                    salesOrderInterface.setEditCurrentGoods(realSaleGoods);
                 } catch (Exception ex) {
                     return;
                 }
@@ -123,13 +137,22 @@ public class EditGoodsFragment extends HandledFragment implements android.suppor
         // Inflate the layout for this fragment
         View view = super.onCreateView(inflater, container, savedInstanceState);
 
+        viewPriceAmount = (TextView) view.findViewById(R.id.edit_goods_value_priceAmount);
+
         viewNumber = (TextView) view.findViewById(R.id.edit_goods_value_number);
         viewName = (TextView) view.findViewById(R.id.edit_goods_value_name);
         viewColor = (TextView) view.findViewById(R.id.edit_goods_value_color);
         viewPrice = (EditText) view.findViewById(R.id.edit_goods_value_price);
+        viewBrokerage = (EditText) view.findViewById(R.id.edit_goods_value_brokerage);
+        viewBrokerageAmount = (EditText) view.findViewById(R.id.edit_goods_value_brokerageAmount);
         viewQty = (EditText) view.findViewById(R.id.edit_goods_value_qty);
 
-        viewImage = (ImageView) view.findViewById(R.id.edit_goods_image);
+        canCalculateBrokerage = true;
+        canLoadCurrentGoodsQty = false;
+
+        viewImage = (PhotoView) view.findViewById(R.id.edit_goods_image);
+        getLoaderManager().initLoader(1, null, this);
+
         if (currentOperation == this.ADD) {
             getLoaderManager().initLoader(0, null, this);
         }
@@ -158,7 +181,7 @@ public class EditGoodsFragment extends HandledFragment implements android.suppor
             @Override
             public void onClick(View view) {
                 if (verifyViewInfo()) {
-                    salesOrderInterface.editCurrentGoods(realGoods);
+                    salesOrderInterface.editCurrentGoods(realSaleGoods);
                     getActivity().getSupportFragmentManager().popBackStack();
                 }
             }
@@ -172,14 +195,23 @@ public class EditGoodsFragment extends HandledFragment implements android.suppor
             }
         });
 
+//        setTextWatcher(true);
+
         setOperationView(currentOperation);
 
         return view;
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        setTextWatcher(false);
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
+        setTextWatcher(true);
         bindGoodsInfo();
     }
 
@@ -199,6 +231,7 @@ public class EditGoodsFragment extends HandledFragment implements android.suppor
     public void onDetach() {
         super.onDetach();
         salesOrderInterface = null;
+        setTextWatcher(false);
     }
 
     @Override
@@ -214,8 +247,16 @@ public class EditGoodsFragment extends HandledFragment implements android.suppor
             if (id == 0) {
                 String method = "GetGoodsClientPrice";
                 JSONObject jsonParas = new JSONObject();
-                jsonParas.put("itemid", currentGoods.getItemID());
+                jsonParas.put("itemid", currentSaleGoods.getId());
                 jsonParas.put("custNum", salesOrderInterface.getSalesOrder().Client.getNumber());
+                loader.setWebMethod(method);
+                loader.setMethodParas(jsonParas);
+            }
+            if (id == 1) {
+                // TODO:Get good image
+                String method = "GetGoodsImage";
+                JSONObject jsonParas = new JSONObject();
+                jsonParas.put("itemid", currentSaleGoods.getId());
                 loader.setWebMethod(method);
                 loader.setMethodParas(jsonParas);
             }
@@ -223,7 +264,9 @@ public class EditGoodsFragment extends HandledFragment implements android.suppor
             ShowDialog.ExceptionDialog(getActivity(), ex.getMessage());
         }
 
-        progressDialog = ShowDialog.showLoaderProgressDialog(getActivity(), loader);
+        if (progressDialog == null || !progressDialog.isShowing()) {
+            progressDialog = ShowDialog.showLoaderProgressDialog(getActivity(), loader);
+        }
 
         return loader;
     }
@@ -235,21 +278,32 @@ public class EditGoodsFragment extends HandledFragment implements android.suppor
 
     @Override
     public void onLoadFinished(Loader<Message> loader, Message data) {
-        progressDialog.dismiss();
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
         try {
             if (loader != null && data != null) {
                 switch (data.what) {
                     case KingdeeK3WiseWebServiceHelper.INVOKE_SUCCESS:
-                        if (loader.getId() == 0) {
-                            currentGoods.setPrice(Double.parseDouble(data.obj.toString()));
+                        int loaderId = loader.getId();
+                        if (loaderId == 0) {
+                            currentSaleGoods.setPrice(new BigDecimal(data.obj.toString()));
                             bindGoodsInfo();
+                        } else if (loaderId == 1) {
+                            String imgData = data.obj.toString();
+                            if (!imgData.equals("")) {
+                                viewImage.setImageBitmap(getBitmapFromHex(imgData));
+                            }
                         }
                         break;
                     case KingdeeK3WiseWebServiceHelper.INVOKE_NULL:
                         ShowDialog.WarningDialog(getActivity(), "读取数据失败");
                         break;
-                    case KingdeeK3WiseWebServiceHelper.EXCEPTION:
+                    case KingdeeK3WiseWebServiceHelper.INVOKE_EXCEPTION:
                         ShowDialog.ExceptionDialog(getActivity(), data.obj.toString());
+                        break;
+                    case KingdeeK3WiseWebServiceHelper.INVOKE_BUSINESS_EXCEPTION:
+                        ShowDialog.WarningDialog(getActivity(), data.obj.toString());
                         break;
                 }
             }
@@ -260,20 +314,34 @@ public class EditGoodsFragment extends HandledFragment implements android.suppor
         }
     }
 
-//    private Bitmap getBitmapFromHex(String imageStr) {
-//        byte[] bytes = Base64.decode(imageStr,Base64.NO_CLOSE);
-////        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
-//        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-//    }
+    private Bitmap getBitmapFromHex(String imageStr) {
+        byte[] bytes = Base64.decode(imageStr, Base64.NO_CLOSE);
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+    }
 
     void bindGoodsInfo() {
-        viewNumber.setText(currentGoods.getNumber());
-        viewName.setText(currentGoods.getName());
-        viewColor.setText(currentGoods.getModel());
-        if(viewPrice.getText().toString().equals("")) {
-            viewPrice.setText(currentGoods.getPrice() == 0 ? "" : Double.toString(currentGoods.getPrice()));
+        viewNumber.setText(currentSaleGoods.getNumber());
+        viewName.setText(currentSaleGoods.getName());
+        viewColor.setText(currentSaleGoods.getModel());
+
+        if (viewPrice.getText().toString().equals("")) {
+            viewPrice.setText(currentSaleGoods.getPrice().compareTo(BigDecimal.ZERO) == 0 ? "" : currentSaleGoods.getPrice().toString());
         }
-        viewQty.setText(currentGoods.getQty() == 0 ? "" : Double.toString(currentGoods.getQty()));
+
+        if (salesOrderInterface.getFragmentResult()) {
+            salesOrderInterface.setFragmentResult(false);
+            viewQty.setText(currentSaleGoods.getQty().compareTo(BigDecimal.ZERO) == 0 ? "" : currentSaleGoods.getQty().toString());
+        }else {
+            if (viewQty.getText().toString().equals("")) {
+                viewQty.setText(currentSaleGoods.getQty().compareTo(BigDecimal.ZERO) == 0 ? "" : currentSaleGoods.getQty().toString());
+            }
+        }
+
+        if (viewBrokerage.getText().toString().equals("")) {
+            viewBrokerage.setText(currentSaleGoods.getBrokerage().compareTo(BigDecimal.ZERO) == 0 ? "" : currentSaleGoods.getBrokerage().toString());
+        }
+
+        canLoadCurrentGoodsQty = false;
     }
 
     void setOperationView(int operation) {
@@ -292,22 +360,126 @@ public class EditGoodsFragment extends HandledFragment implements android.suppor
 
     public boolean verifyViewInfo() {
 
-        String price = viewPrice.getText().toString();
-        if (price.equals("") || Double.parseDouble(price) <= 0) {
+        String priceStr = viewPrice.getText().toString();
+        if (priceStr.equals("") || new BigDecimal(priceStr).compareTo(BigDecimal.ZERO) != 1) {
             ShowDialog.WarningDialog(getActivity(), "请输入正确的价格");
             return false;
         }
 
-        String qty = viewQty.getText().toString();
-        if (qty.equals("") || Double.parseDouble(qty) <= 0) {
+        String qtyStr = viewQty.getText().toString();
+        if (qtyStr.equals("") || new BigDecimal(qtyStr).compareTo(BigDecimal.ZERO) != 1) {
             ShowDialog.WarningDialog(getActivity(), "请输入正确的数量");
             return false;
         }
 
-        currentGoods.setPrice(Double.parseDouble(price));
-        currentGoods.setQty(Double.parseDouble(qty));
+        String brokerageStr = viewBrokerage.getText().toString();
+        if (brokerageStr.equals("") || new BigDecimal(brokerageStr).compareTo(BigDecimal.ZERO) == -1) {
+            brokerageStr = "0";
+        }
+
+        if (new BigDecimal(priceStr).compareTo(new BigDecimal(brokerageStr)) != 1) {
+            ShowDialog.WarningDialog(getActivity(), "佣金单价必须小于商品单价");
+            return false;
+        }
+
+        currentSaleGoods.setPrice(new BigDecimal(priceStr));
+        currentSaleGoods.setBrokerage(new BigDecimal(brokerageStr));
+        currentSaleGoods.setQty(new BigDecimal(qtyStr));
         return true;
     }
 
+    private TextViewWatcher priceWatcher=new TextViewWatcher(){
+        @Override
+        public void afterTextChanged(Editable s) {
+            try {
+                if(s.toString().equals("")){
+                    viewPriceAmount.setText("");
+                }else {
+                    BigDecimal price = new BigDecimal(s.toString());
+                    BigDecimal qty = new BigDecimal(viewQty.getText().toString());
+                    viewPriceAmount.setText(price.multiply(qty).toString());
+                }
+            } catch (Exception ex) {
+                return;
+            }
+        }
+    };
 
+    private TextViewWatcher qtyWatcher=new TextViewWatcher(){
+        @Override
+        public void afterTextChanged(Editable s) {
+            try {
+                if(s.toString().equals("")){
+                    viewPriceAmount.setText("");
+                    viewBrokerageAmount.setText("");
+                }else {
+                    BigDecimal price = new BigDecimal(viewPrice.getText().toString());
+                    BigDecimal qty = new BigDecimal(s.toString());
+                    viewPriceAmount.setText(price.multiply(qty).toString());
+
+                    BigDecimal brokerage = new BigDecimal(viewBrokerage.getText().toString());
+                    viewBrokerageAmount.setText(brokerage.multiply(qty).toString());
+                }
+            } catch (Exception ex) {
+                return;
+            }
+        }
+    };
+
+    private TextViewWatcher brokerageWatcher=new TextViewWatcher(){
+        @Override
+        public void afterTextChanged(Editable s) {
+            try {
+                if (canCalculateBrokerage) {
+                    canCalculateBrokerage = false;
+                    if(s.toString().equals("")){
+                        viewBrokerageAmount.setText("");
+                    }else {
+                        BigDecimal brokerage = new BigDecimal(s.toString());
+                        BigDecimal qty = new BigDecimal(viewQty.getText().toString());
+                        viewBrokerageAmount.setText(brokerage.multiply(qty).toString());
+                    }
+                }
+            } catch (Exception ex) {
+                return;
+            } finally {
+                canCalculateBrokerage = true;
+            }
+        }
+    };
+
+    private TextViewWatcher brokerageAmountWatcher=new TextViewWatcher(){
+        @Override
+        public void afterTextChanged(Editable s) {
+            try {
+                if (canCalculateBrokerage) {
+                    canCalculateBrokerage = false;
+                    BigDecimal qty = new BigDecimal(viewQty.getText().toString());
+                    BigDecimal brokerageAmount = new BigDecimal(s.toString());
+                    viewBrokerage.setText(brokerageAmount.divide(qty, 2, BigDecimal.ROUND_HALF_EVEN).toString());
+
+                }
+            } catch (Exception ex) {
+                return;
+            } finally {
+                canCalculateBrokerage = true;
+            }
+        }
+    };
+
+    private void setTextWatcher(boolean isSet){
+        if(isSet) {
+            setTextWatcher(false);
+            viewPrice.addTextChangedListener(priceWatcher);
+            viewQty.addTextChangedListener(qtyWatcher);
+            viewBrokerage.addTextChangedListener(brokerageWatcher);
+            viewBrokerageAmount.addTextChangedListener(brokerageAmountWatcher);
+        }
+        else {
+            viewPrice.removeTextChangedListener(priceWatcher);
+            viewQty.removeTextChangedListener(qtyWatcher);
+            viewBrokerage.removeTextChangedListener(brokerageWatcher);
+            viewBrokerageAmount.removeTextChangedListener(brokerageAmountWatcher);
+        }
+    }
 }

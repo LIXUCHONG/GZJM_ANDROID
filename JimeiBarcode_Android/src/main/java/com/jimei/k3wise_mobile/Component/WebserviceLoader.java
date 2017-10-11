@@ -21,8 +21,6 @@ public class WebserviceLoader extends AsyncTaskLoader<Message> {
     String webMethod;
     JSONObject methodParas;
 
-    ProgressDialog progressDialog;
-
     WebserviceLoader Instance;
     Message messageResult;
 

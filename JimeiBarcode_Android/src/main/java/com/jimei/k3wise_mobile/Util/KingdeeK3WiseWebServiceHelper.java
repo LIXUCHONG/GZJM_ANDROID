@@ -1,15 +1,9 @@
 package com.jimei.k3wise_mobile.Util;
 
-import android.app.Application;
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
 import android.os.Message;
-import android.preference.Preference;
-import android.preference.PreferenceManager;
 
 import com.jimei.k3wise_mobile.BO.LoginUser;
-import com.jimei.k3wise_mobile.SettingsActivity;
-import com.jimei.k3wise_mobile.Util.CommonHelper;
 
 import org.json.JSONObject;
 
@@ -32,6 +26,8 @@ public class KingdeeK3WiseWebServiceHelper {
     public static final int ADMIN_LOGIN_SUCCESS = 5;
     public static final int CONNECTION_ERROR = 0;
     public static final int EXCEPTION = -1;
+    public static final int INVOKE_EXCEPTION = 6;
+    public static final int INVOKE_BUSINESS_EXCEPTION = 7;
 
     //K3WISE website url
 //    public static String K3WISE_WEBSITE_URL = "http://192.168.0.200:80/JimeiBarcode_WebServices/AndroidService.asmx/";
@@ -41,16 +37,15 @@ public class KingdeeK3WiseWebServiceHelper {
     public static String COOKIE_VALUE = null;
 
     //设置站点地址
-    private static String GetRequestUrl(Context context, String method){
-        String ip=PreferencesHelper.Get(context,"http_connect_ip");
-        String port = PreferencesHelper.Get(context,"http_connect_port");
+    private static String GetRequestUrl(Context context, String method) {
+        String ip = PreferencesHelper.Get(context, "http_connect_ip");
+        String port = PreferencesHelper.Get(context, "http_connect_port");
         return String.format(K3WISE_WEBSITE_URL, ip, port, method);
     }
 
     //初始化HTTP连接
-    private static HttpURLConnection InitURLConn(Context context, String method, JSONObject paras)
+    private static HttpURLConnection InitURLConn(Context context, String method, JSONObject params)
             throws Exception {
-//        URL full_url = new URL(K3WISE_WEBSITE_URL.concat(method));
         URL full_url = new URL(GetRequestUrl(context, method));
 
         HttpURLConnection Connection = (HttpURLConnection) full_url.openConnection();
@@ -82,11 +77,11 @@ public class KingdeeK3WiseWebServiceHelper {
         jObj.put("versionName", CommonHelper.getVersionName());
         jObj.put("userid", LoginUser.Id);
 
-        if(paras!=null) {
-            Iterator keys = paras.keys();
+        if (params != null) {
+            Iterator keys = params.keys();
             while (keys.hasNext()) {
                 String key = (String) keys.next();
-                jObj.put(key, URLEncoder.encode(paras.getString(key),"UTF-8"));
+                jObj.put(key, URLEncoder.encode(params.getString(key), "UTF-8"));
             }
         }
 
@@ -125,17 +120,23 @@ public class KingdeeK3WiseWebServiceHelper {
                 sResult += line;
             }
 
-            if (sResult.length() > 0) {
-                msgResult.obj = sResult;
+            JSONObject msgObj = new JSONObject(sResult);
+            sResult=msgObj.getString("message");
+            int invokeStatus = msgObj.getInt("status");
+            if (invokeStatus == -1) {
+                msgResult.what = INVOKE_EXCEPTION;
+            } else if (invokeStatus == 0) {
+                msgResult.what = INVOKE_BUSINESS_EXCEPTION;
+            }else {
                 msgResult.what = INVOKE_SUCCESS;
-            } else {
-                msgResult.what = INVOKE_NULL;
             }
 
+            msgResult.obj = sResult;
             reader.close();
         } else {
             msgResult.obj = (new BufferedReader(new InputStreamReader(connectionInvoke.getErrorStream(), "utf-8"))).toString();
             msgResult.what = CONNECTION_ERROR;
+            // TODO: 2017/10/1
         }
 
         connectionInvoke.disconnect();

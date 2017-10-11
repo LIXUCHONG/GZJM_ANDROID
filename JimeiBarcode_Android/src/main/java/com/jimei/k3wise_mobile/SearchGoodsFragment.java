@@ -1,7 +1,7 @@
 package com.jimei.k3wise_mobile;
 
 //import android.app.Fragment;
-import android.support.v4.app.Fragment;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Message;
@@ -16,8 +16,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 import com.jimei.k3wise_mobile.BO.Client;
-import com.jimei.k3wise_mobile.BO.Goods;
-import com.jimei.k3wise_mobile.BO.LoginUser;
+import com.jimei.k3wise_mobile.BO.SaleGoods;
 import com.jimei.k3wise_mobile.Component.HandledFragment;
 import com.jimei.k3wise_mobile.Component.ProgressView;
 import com.jimei.k3wise_mobile.Component.WebserviceTask;
@@ -28,6 +27,7 @@ import com.jimei.k3wise_mobile.Util.ShowDialog;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,9 +45,9 @@ public class SearchGoodsFragment extends HandledFragment {
     private ListView mSearchGoodsListView;
 
     private SalesOrderInterface salesOrderInterface;
-    private ArrayList<Goods> goodsList = new ArrayList<>();
+    private ArrayList<SaleGoods> goodsList = new ArrayList<>();
     private GetGoodsClientPriceTask getGoodsClientPriceTask;
-    private Goods selectedGoods;
+    private SaleGoods selectedSaleGoods;
 
     @Override
     protected int getLayoutId() {
@@ -61,13 +61,13 @@ public class SearchGoodsFragment extends HandledFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater,container,savedInstanceState);
+        View view = super.onCreateView(inflater, container, savedInstanceState);
         mSearchGoodsView = view.findViewById(R.id.search_goods_form);
         keyInputView = (EditText) view.findViewById(R.id.key_input_edit_text);
         keyInputView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus) {
+                if (!hasFocus) {
                     InputMethodManager imm = (InputMethodManager) (getActivity().getSystemService(INPUT_METHOD_SERVICE));
                     imm.hideSoftInputFromWindow(keyInputView.getWindowToken(), 0);
                 }
@@ -155,6 +155,12 @@ public class SearchGoodsFragment extends HandledFragment {
                 case KingdeeK3WiseWebServiceHelper.INVOKE_NULL:
                     ShowDialog.WarningDialog(getActivity(), "读取数据失败");
                     break;
+                case KingdeeK3WiseWebServiceHelper.INVOKE_BUSINESS_EXCEPTION:
+                    ShowDialog.WarningDialog(getActivity(), msg.obj.toString());
+                    break;
+                case KingdeeK3WiseWebServiceHelper.INVOKE_EXCEPTION:
+                    ShowDialog.ExceptionDialog(getActivity(), msg.obj.toString());
+                    break;
             }
 
             super.onPostExecute(msg);
@@ -166,14 +172,14 @@ public class SearchGoodsFragment extends HandledFragment {
 
             JSONArray jsonArray = new JSONArray(jsonStr);
             for (int i = 0; i < jsonArray.length(); i++) {
-                Goods g = new Goods();
+                SaleGoods g = new SaleGoods();
                 HashMap<String, Object> item = new HashMap<String, Object>();
 
-                g.setItemID(jsonArray.getJSONObject(i).getInt("ItemID"));
-                g.setNumber(jsonArray.getJSONObject(i).getString("Number"));
-                g.setName(jsonArray.getJSONObject(i).getString("Name"));
-                g.setModel(jsonArray.getJSONObject(i).getString("Model"));
-                g.setPrice(jsonArray.getJSONObject(i).getDouble("Price"));
+                g.setId(jsonArray.getJSONObject(i).getInt("itemid"));
+                g.setNumber(jsonArray.getJSONObject(i).getString("number"));
+                g.setName(jsonArray.getJSONObject(i).getString("name"));
+                g.setModel(jsonArray.getJSONObject(i).getString("model"));
+                g.setPrice(new BigDecimal(jsonArray.getJSONObject(i).getString("price")));
                 goodsList.add(g);
 
                 item.put("Number", g.getNumber());
@@ -194,11 +200,11 @@ public class SearchGoodsFragment extends HandledFragment {
             mSearchGoodsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    selectedGoods =new Goods();
-                    selectedGoods.setItemID(goodsList.get(i).getItemID());
-                    selectedGoods.setNumber(goodsList.get(i).getNumber());
-                    selectedGoods.setName(goodsList.get(i).getName());
-                    selectedGoods.setModel(goodsList.get(i).getModel());
+                    selectedSaleGoods = new SaleGoods();
+                    selectedSaleGoods.setId(goodsList.get(i).getId());
+                    selectedSaleGoods.setNumber(goodsList.get(i).getNumber());
+                    selectedSaleGoods.setName(goodsList.get(i).getName());
+                    selectedSaleGoods.setModel(goodsList.get(i).getModel());
 
                     /**
                      * TODO:
@@ -206,10 +212,10 @@ public class SearchGoodsFragment extends HandledFragment {
                      * 是：读取默认价格
                      * 否：读取最近订单价格
                      */
-                    Client client=salesOrderInterface.getSalesOrder().Client;
+                    Client client = salesOrderInterface.getSalesOrder().Client;
                     if (salesOrderInterface.getSalesOrder().isGetClientGoodsPrice()) {
-                        if(client != null && client.getNumber() != null && !client.getNumber().equals("")){
-                            showEditGoodsFragment(selectedGoods);
+                        if (client != null && client.getNumber() != null && !client.getNumber().equals("")) {
+                            showEditGoodsFragment(selectedSaleGoods);
 //                            try {
 //                                JSONObject jsonObject = new JSONObject();
 //                                jsonObject.put("itemid", selectedGoods.getItemID());
@@ -219,13 +225,13 @@ public class SearchGoodsFragment extends HandledFragment {
 //                            }catch (Exception ex){
 //                                ShowDialog.ExceptionDialog(getActivity(),ex.getMessage());
 //                            }
-                        }else {
-                            selectedGoods.setPrice(0);
-                            showEditGoodsFragment(selectedGoods);
+                        } else {
+                            selectedSaleGoods.setPrice(BigDecimal.ZERO);
+                            showEditGoodsFragment(selectedSaleGoods);
                         }
                     } else {
-                        selectedGoods.setPrice(goodsList.get(i).getPrice());
-                        showEditGoodsFragment(selectedGoods);
+                        selectedSaleGoods.setPrice(goodsList.get(i).getPrice());
+                        showEditGoodsFragment(selectedSaleGoods);
                     }
                 }
             });
@@ -238,7 +244,7 @@ public class SearchGoodsFragment extends HandledFragment {
         }
     }
 
-    private void showEditGoodsFragment(Goods selectedGoods){
+    private void showEditGoodsFragment(SaleGoods selectedGoods) {
         salesOrderInterface.setCurrentGoods(selectedGoods);
         salesOrderInterface.showEditGoodsFragment(EditGoodsFragment.ADD);
     }
@@ -265,13 +271,19 @@ public class SearchGoodsFragment extends HandledFragment {
                 case KingdeeK3WiseWebServiceHelper.INVOKE_SUCCESS:
                     try {
                         getGoodsClientPrice(msg.obj.toString());
-                        showEditGoodsFragment(selectedGoods);
+                        showEditGoodsFragment(selectedSaleGoods);
                     } catch (Exception ex) {
                         ShowDialog.ExceptionDialog(getActivity(), ex.getMessage());
                     }
                     break;
                 case KingdeeK3WiseWebServiceHelper.INVOKE_NULL:
                     ShowDialog.WarningDialog(getActivity(), "读取客户价格失败");
+                    break;
+                case KingdeeK3WiseWebServiceHelper.INVOKE_BUSINESS_EXCEPTION:
+                    ShowDialog.WarningDialog(getActivity(), msg.obj.toString());
+                    break;
+                case KingdeeK3WiseWebServiceHelper.INVOKE_EXCEPTION:
+                    ShowDialog.ExceptionDialog(getActivity(), msg.obj.toString());
                     break;
             }
 
@@ -284,8 +296,8 @@ public class SearchGoodsFragment extends HandledFragment {
             getGoodsClientPriceTask = null;
         }
 
-        private void getGoodsClientPrice(String jsonStr) throws Exception{
-            selectedGoods.setPrice(Double.parseDouble(jsonStr));
+        private void getGoodsClientPrice(String jsonStr) throws Exception {
+            selectedSaleGoods.setPrice(new BigDecimal(jsonStr));
         }
     }
 }

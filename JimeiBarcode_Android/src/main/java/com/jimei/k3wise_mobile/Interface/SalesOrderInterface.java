@@ -1,18 +1,11 @@
 package com.jimei.k3wise_mobile.Interface;
 
-import android.app.Fragment;
-import android.os.Bundle;
-
 import com.jimei.k3wise_mobile.BO.Client;
-import com.jimei.k3wise_mobile.BO.Goods;
-import com.jimei.k3wise_mobile.BO.Inventory;
+import com.jimei.k3wise_mobile.BO.SaleGoods;
 import com.jimei.k3wise_mobile.BO.SalesOrder;
 import com.jimei.k3wise_mobile.SaleGoodsListFragment;
 import com.jimei.k3wise_mobile.SaleOrderInfoFragment;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -24,16 +17,18 @@ public interface SalesOrderInterface {
 //    void editGoods(HashMap<String,Object> goods);
 
     void showEditGoodsFragment(int operation);
+    void setFragmentResult(boolean value);
+    boolean getFragmentResult();
     void showSelectInventoryFragment();
     void showSelectClientFragment();
     void setSaleGoodsListFragment(SaleGoodsListFragment fragment);
     void setSaleOrderInfoFragment(SaleOrderInfoFragment fragment);
-    void setCurrentGoods(Goods currentGoods);
-    void setEditCurrentGoods(Goods edit_currentGoods);
+    void setCurrentGoods(SaleGoods currentGoods);
+    void setEditCurrentGoods(SaleGoods edit_currentGoods);
     void addCurrentGoods();
-    void editCurrentGoods(Goods realGoods);
-    void delCurrentGoods(Goods currentGoods);
-    List<Goods> returnSaleGoodsList();
+    void editCurrentGoods(SaleGoods realGoods);
+    void delCurrentGoods(SaleGoods currentGoods);
+    List<SaleGoods> returnSaleGoodsList();
     List<?> returnSaleOrderInfoList(Class<?> currentClass);
     SalesOrder getSalesOrder();
     void setSaleOrderInfo(Class<?> currentClass,int selectedIndex);

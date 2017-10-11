@@ -12,15 +12,18 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
-import com.jimei.k3wise_mobile.BO.Goods;
+import com.jimei.k3wise_mobile.BO.SaleGoods;
 import com.jimei.k3wise_mobile.Component.HandledFragment;
 import com.jimei.k3wise_mobile.Interface.SalesOrderInterface;
 import com.jimei.k3wise_mobile.Util.CommonHelper;
 import com.jimei.k3wise_mobile.Util.ShowDialog;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static java.lang.String.format;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,13 +36,15 @@ public class SaleGoodsListFragment extends HandledFragment {
     private static final String GOODS_LIST = "goods_list";
 
     // TODO: Rename and change types of parameters
-    private List<Goods> goodsList;
+    private List<SaleGoods> goodsList;
 
     // TODO: 保留View引用
     View rootView = null;
     ListView goodsListView;
     TextView sumQtyView;
     TextView sumPriceView;
+
+    BigDecimal sumQty, priceAmount, brokerageAmount, noBrokerageAmount;
 
     // TODO: 变量
     private SalesOrderInterface salesOrderInterface;
@@ -66,7 +71,7 @@ public class SaleGoodsListFragment extends HandledFragment {
      * @return A new instance of fragment SaleGoodsListFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static SaleGoodsListFragment newInstance(ArrayList<Goods> goodsList) {
+    public static SaleGoodsListFragment newInstance(ArrayList<SaleGoods> goodsList) {
         SaleGoodsListFragment fragment = new SaleGoodsListFragment();
         Bundle args = new Bundle();
         args.putSerializable(GOODS_LIST, goodsList);
@@ -91,7 +96,7 @@ public class SaleGoodsListFragment extends HandledFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            goodsList = (List<Goods>) getArguments().getSerializable(GOODS_LIST);
+            goodsList = (List<SaleGoods>) getArguments().getSerializable(GOODS_LIST);
         }
     }
 
@@ -99,7 +104,7 @@ public class SaleGoodsListFragment extends HandledFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         if (rootView == null) {
-            rootView = super.onCreateView(inflater,container,savedInstanceState);
+            rootView = super.onCreateView(inflater, container, savedInstanceState);
 
             goodsListView = (ListView) rootView.findViewById(R.id.sale_goods_list_lv);
             sumQtyView = (TextView) rootView.findViewById(R.id.sale_goods_list_sum_qty);
@@ -117,27 +122,30 @@ public class SaleGoodsListFragment extends HandledFragment {
         bindGoodsList(goodsList);
     }
 
-    private List<Map<String, Object>> conventGoodsListToMapList(List<Goods> goodsList) {
+    private List<Map<String, Object>> conventGoodsListToMapList(List<SaleGoods> goodsList) {
 
         List<Map<String, Object>> mapList = new ArrayList<>();
 
         if (goodsList != null) {
-            for (Goods goods : goodsList) {
+            for (SaleGoods goods : goodsList) {
                 Map<String, Object> map = CommonHelper.getObjMap(goods);
-                map.put("sumPrice", goods.amountPrice());
+                map.put("sumPrice", goods.priceAmount());
+                map.put("brokerage", goods.getBrokerage());
+                map.put("brokerageAmount", goods.brokerageAmount());
+                map.put("noBrokerageAmount", goods.noBrokerageAmount());
                 mapList.add(map);
             }
         }
         return mapList;
     }
 
-    private void bindGoodsList(final List<Goods> goodsList) {
+    private void bindGoodsList(final List<SaleGoods> goodsList) {
 
         List<Map<String, Object>> goodsMapList = conventGoodsListToMapList(goodsList);
 
         SimpleAdapter mAdapter = new SimpleAdapter(getActivity(), goodsMapList, R.layout.lv_sale_goods_list_item,
-                new String[]{"Number", "Name", "Model", "Price", "Qty", "sumPrice"},
-                new int[]{R.id.item_sale_goods_list_no, R.id.item_sale_goods_list_name, R.id.item_sale_goods_list_model, R.id.item_sale_goods_list_price, R.id.item_sale_goods_list_qty, R.id.item_sale_goods_list_amount});
+                new String[]{"Number", "Name", "Model", "Price", "Qty", "sumPrice", "brokerage", "brokerageAmount", "noBrokerageAmount"},
+                new int[]{R.id.item_sale_goods_list_no, R.id.item_sale_goods_list_name, R.id.item_sale_goods_list_model, R.id.item_sale_goods_list_price, R.id.item_sale_goods_list_qty, R.id.item_sale_goods_list_amount, R.id.item_sale_goods_list_brokerage, R.id.item_sale_goods_list_brokerageAmount, R.id.item_sale_goods_list_noBrokerageAmount});
 
         goodsListView.setAdapter(mAdapter);
         goodsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -154,21 +162,21 @@ public class SaleGoodsListFragment extends HandledFragment {
                     cancelView.setVisibility(View.VISIBLE);
 
                     delView.setOnClickListener(new View.OnClickListener() {
-                        Goods goods=goodsList.get(i);
+                        SaleGoods saleGoods = goodsList.get(i);
 
                         @Override
                         public void onClick(View v) {
 //                            ShowDialog.MessageDialog(getActivity(), "删除");
-                            String dlgMessage = String.format("是否删除选定物料？\n名称：%s\n编号：%s\n颜色：%s\n单价：%.2f\n数量：%.2f\n合计：%.2f",
-                                    goods.getName(), goods.getNumber(),goods.getModel(),goods.getPrice(),goods.getQty(),goods.amountPrice());
+                            String dlgMessage = format("是否删除选定物料？\n名称：%s\n编号：%s\n颜色：%s\n单价：%.2f\n数量：%.2f\n合计：%.2f",
+                                    saleGoods.getName(), saleGoods.getNumber(), saleGoods.getModel(), saleGoods.getPrice(), saleGoods.getQty(), saleGoods.priceAmount());
                             ShowDialog.YesNoDialog(getActivity(), dlgMessage, delPressed(), null);
                         }
 
-                        Runnable delPressed(){
+                        Runnable delPressed() {
                             return new Runnable() {
                                 @Override
                                 public void run() {
-                                    salesOrderInterface.delCurrentGoods(goods);
+                                    salesOrderInterface.delCurrentGoods(saleGoods);
                                     onResume();
                                 }
                             };
@@ -202,31 +210,20 @@ public class SaleGoodsListFragment extends HandledFragment {
             }
         });
 
-        sumQtyView.setText(Double.toString(sumQty(goodsList)));
-        sumPriceView.setText(Double.toString(sumAmount(goodsList)));
+        sumGoodsList(goodsList);
+        sumQtyView.setText(sumQty.toString());
+        sumPriceView.setText(priceAmount.toString());
     }
 
-    private double sumQty(List<Goods> goodsList) {
-        double sum = 0;
-
+    private void sumGoodsList(List<SaleGoods> goodsList) {
+        sumQty = priceAmount = brokerageAmount = noBrokerageAmount = BigDecimal.ZERO;
         if (goodsList != null) {
-            for (Goods goods : goodsList) {
-                sum += goods.getQty();
+            for (SaleGoods goods : goodsList) {
+                sumQty = sumQty.add(goods.getQty());
+                priceAmount = priceAmount.add(goods.priceAmount());
+//                brokerageAmount += goods.brokerageAmount();
+//                noBrokerageAmount += goods.noBrokerageAmount();
             }
         }
-
-        return sum;
-    }
-
-    private double sumAmount(List<Goods> goodsList) {
-        double sum = 0;
-
-        if (goodsList != null) {
-            for (Goods goods : goodsList) {
-                sum += goods.amountPrice();
-            }
-        }
-
-        return sum;
     }
 }

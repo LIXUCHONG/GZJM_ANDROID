@@ -286,7 +286,7 @@ public class SaleOrderInfoFragment extends HandledFragment {
             return false;
         }
 
-        salesOrderInterface.getSalesOrder().SalesGoods = salesOrderInterface.returnSaleGoodsList();
+        salesOrderInterface.getSalesOrder().setSalesGoods(salesOrderInterface.returnSaleGoodsList());
 
         String remark=((AutoCompleteTextView) rootView.findViewById(R.id.et_sales_order_info_remark)).getText().toString();
         String amount1 = ((EditText) rootView.findViewById(R.id.et_sales_order_info_amount1)).getText().toString();

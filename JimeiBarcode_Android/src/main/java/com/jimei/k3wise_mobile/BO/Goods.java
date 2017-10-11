@@ -1,41 +1,28 @@
 package com.jimei.k3wise_mobile.BO;
 
-import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Collection;
 
 /**
- * Created by lee on 2016/9/15.
+ * Created by lee on 2017/9/5.
  */
+
 public class Goods implements Serializable {
+    protected int Id;
+    protected String Number;
+    protected String Name;
+    protected int ModelId;
+    protected int UnitId;
+    protected int ColorId;
 
-    public Goods(){
-        SelectedInventory = new ArrayList<>();
+    public int getId() {
+        return Id;
     }
 
-    public int getItemID() {
-        return ItemID;
-    }
-
-    public void setItemID(int itemID) {
-        this.ItemID = itemID;
-    }
-
-    public String getModel() {
-        return Model;
-    }
-
-    public void setModel(String model) {
-        this.Model = model;
-    }
-
-    public String getName() {
-        return Name;
-    }
-
-    public void setName(String name) {
-        this.Name = name;
+    public void setId(int id) {
+        Id = id;
     }
 
     public String getNumber() {
@@ -43,53 +30,38 @@ public class Goods implements Serializable {
     }
 
     public void setNumber(String number) {
-        this.Number = number;
+        Number = number;
     }
 
-    public double getPrice() {
-        return Price;
+    public String getName() {
+        return Name;
     }
 
-    public void setPrice(double price) {
-        this.Price = price;
+    public void setName(String name) {
+        Name = name;
     }
 
-    int ItemID;
-    String Model;
-    String Name;
-    String Number;
-    double Price;
-    double Qty;
-    Bitmap Image;
-//    String SelectedInventoryStockGroup;
-//
-//    public String getSelectedInventoryStockGroup() {
-//        return SelectedInventoryStockGroup;
-//    }
-//
-//    public void setSelectedInventoryStockGroup(String selectedInventoryStockGroup) {
-//        this.SelectedInventoryStockGroup = selectedInventoryStockGroup;
-//    }
-
-    public double getQty() {
-        return Qty;
+    public int getModelId() {
+        return ModelId;
     }
 
-    public void setQty(double qty) {
-        Qty = qty;
+    public void setModelId(int modelId) {
+        ModelId = modelId;
     }
 
-    public ArrayList<Inventory> SelectedInventory;
-
-    public double amountPrice(){
-        return Qty*Price;
+    public int getUnitId() {
+        return UnitId;
     }
 
-    public Bitmap getImage() {
-        return Image;
+    public void setUnitId(int unitId) {
+        UnitId = unitId;
     }
 
-    public void setImage(Bitmap image) {
-        Image = image;
+    public int getColorId() {
+        return ColorId;
+    }
+
+    public void setColorId(int colorId) {
+        ColorId = colorId;
     }
 }

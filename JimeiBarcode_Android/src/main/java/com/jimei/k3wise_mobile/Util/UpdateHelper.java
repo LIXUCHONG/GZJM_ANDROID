@@ -71,6 +71,12 @@ public class UpdateHelper {
                 case KingdeeK3WiseWebServiceHelper.INVOKE_NULL:
                     ShowDialog.WarningDialog(context, "更新配置信息读取失败");
                     break;
+                case KingdeeK3WiseWebServiceHelper.INVOKE_BUSINESS_EXCEPTION:
+                    ShowDialog.WarningDialog(context, msg.obj.toString());
+                    break;
+                case KingdeeK3WiseWebServiceHelper.INVOKE_EXCEPTION:
+                    ShowDialog.ExceptionDialog(context, msg.obj.toString());
+                    break;
             }
         }
 

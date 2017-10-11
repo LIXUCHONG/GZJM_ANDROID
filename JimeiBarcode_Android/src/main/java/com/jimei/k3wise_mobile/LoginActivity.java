@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Message;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -265,9 +266,6 @@ public class LoginActivity extends BaseAppCompatActivity  /* implements LoaderCa
                         LoginUser.Id = jsonObject.getInt("id");
                         LoginUser.Number = jsonObject.getString("number");
                         LoginUser.Name = jsonObject.getString("name");
-//                        LoginUser.Id = 16000;
-//                        LoginUser.Number = "99999";
-//                        LoginUser.Name = "test";
                     } catch (Exception ex) {
                         ShowDialog.ExceptionDialog(LoginActivity.this, ex.getMessage());
                         return;
@@ -280,6 +278,12 @@ public class LoginActivity extends BaseAppCompatActivity  /* implements LoaderCa
                     break;
                 case KingdeeK3WiseWebServiceHelper.INVOKE_NULL:
                     ShowDialog.WarningDialog(LoginActivity.this, "用户或密码错误");
+                    break;
+                case KingdeeK3WiseWebServiceHelper.INVOKE_BUSINESS_EXCEPTION:
+                    ShowDialog.WarningDialog(LoginActivity.this, msg.obj.toString());
+                    break;
+                case KingdeeK3WiseWebServiceHelper.INVOKE_EXCEPTION:
+                    ShowDialog.ExceptionDialog(LoginActivity.this, msg.obj.toString());
                     break;
             }
 

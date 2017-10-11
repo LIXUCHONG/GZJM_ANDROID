@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.jimei.k3wise_mobile.BO.LoginUser;
 import com.jimei.k3wise_mobile.Component.BaseAppCompatActivity;
+import com.jimei.k3wise_mobile.Interface.DocumentsFinderInterface;
 import com.jimei.k3wise_mobile.Util.ShowDialog;
 
 public class MainActivity extends BaseAppCompatActivity
@@ -112,7 +113,6 @@ public class MainActivity extends BaseAppCompatActivity
         if ((operation_menu_show != null && operation_menu_show.getVisibility() == View.VISIBLE)) {
             operation_menu_show.setVisibility(View.GONE);
         }
-
         if (id == R.id.nav_stores) {
             operation_menu_show = findViewById(R.id.stores_operations_main);
             operation_menu_show.setVisibility(View.VISIBLE);
@@ -131,6 +131,10 @@ public class MainActivity extends BaseAppCompatActivity
     public void operationButtonClickHandler(View view) {
         if (view.getId() == R.id.sale_order_btn) {
             Intent intent = new Intent(this, SaleActivity.class);
+            startActivity(intent);
+        } else if(view.getId() == R.id.sale_order_edit_btn){
+            Intent intent = new Intent(this, FindDocumentActivity.class);
+            intent.putExtra("DocumentType", DocumentsFinderInterface.DocumentType.SalesOrder.toString());
             startActivity(intent);
         } else if (view.getId() == R.id.inventory_btn) {
             ShowDialog.MessageDialog(MainActivity.this, "库存查询", null);

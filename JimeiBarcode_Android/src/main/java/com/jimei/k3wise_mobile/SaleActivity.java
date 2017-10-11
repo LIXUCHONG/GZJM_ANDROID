@@ -16,7 +16,7 @@ import android.view.View;
 
 import com.google.gson.Gson;
 import com.jimei.k3wise_mobile.BO.Client;
-import com.jimei.k3wise_mobile.BO.Goods;
+import com.jimei.k3wise_mobile.BO.SaleGoods;
 import com.jimei.k3wise_mobile.BO.LoginUser;
 import com.jimei.k3wise_mobile.BO.Properties.PayType;
 import com.jimei.k3wise_mobile.BO.Properties.SaleType;
@@ -36,25 +36,27 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 import java.util.UUID;
 
-public class SaleActivity extends BaseAppCompatActivity implements SalesOrderInterface, LoaderManager.LoaderCallbacks<Message> {
+public class SaleActivity extends BaseAppCompatActivity implements SalesOrderInterface/*, LoaderManager.LoaderCallbacks<Message>*/ {
     Stack<HandledFragment> currentFragmentStack = new Stack<>();
     EditGoodsFragment editGoodsFragment;
     SelectInventoryFragment selectInventoryFragment;
     SaleGoodsListFragment saleGoodsListFragment;
     SaleOrderInfoFragment saleOrderInfoFragment;
+    boolean fragmentResult;
 
     private FragmentTabHost mTabHost = null;
     private ProgressView viewProgress;
     private View formTabHost;
 
     SalesOrder Order = new SalesOrder();
-    Goods currentGoods = null;
-    Goods edit_currentGoods = null;
-    ArrayList<Goods> GoodsList = null;
+    SaleGoods currentGoods = null;
+    SaleGoods edit_currentSaleGoods = null;
+    ArrayList<SaleGoods> GoodsList = null;
     final String uuid = UUID.randomUUID().toString();
 
     List<ShippingType> shippingTypeList = new ArrayList<>();
@@ -75,6 +77,7 @@ public class SaleActivity extends BaseAppCompatActivity implements SalesOrderInt
         super.onCreate(savedInstanceState);
 
         getSupportLoaderManager().initLoader(0, null, this);
+
 //        getLoaderManager().initLoader(0,null, this);
 
         setSubTitle("提交");
@@ -98,6 +101,8 @@ public class SaleActivity extends BaseAppCompatActivity implements SalesOrderInt
 //
 //        mLoadViewInitInfoTask = new LoadViewInitInfoTask(this, "GeSalesOrderViewInitInfo", jParas);
 //        mLoadViewInitInfoTask.execute();
+
+        fragmentResult = false;
 
         viewProgress = (ProgressView) findViewById(R.id.progress_sales_order);
         formTabHost = findViewById(R.id.tabhost_layout);
@@ -161,6 +166,7 @@ public class SaleActivity extends BaseAppCompatActivity implements SalesOrderInt
     }
 
     void showFragment(HandledFragment fragment) {
+        fragmentResult = false;
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
         transaction.replace(R.id.currentFragment, fragment);
@@ -169,11 +175,22 @@ public class SaleActivity extends BaseAppCompatActivity implements SalesOrderInt
     }
 
     public void showEditGoodsFragment(int operation) {
+//        editGoodsFragment =EditGoodsFragment.newInstance(operation, currentGoods);
+//        showFragment(currentFragmentStack.push(editGoodsFragment));
+
         showFragment(currentFragmentStack.push(EditGoodsFragment.newInstance(operation, currentGoods)));
     }
 
+    public void setFragmentResult(boolean value) {
+        fragmentResult = value;
+    }
+
+    public boolean getFragmentResult() {
+        return fragmentResult;
+    }
+
     public void showSelectInventoryFragment() {
-        showFragment(currentFragmentStack.push(SelectInventoryFragment.newInstance(currentGoods, edit_currentGoods)));
+        showFragment(currentFragmentStack.push(SelectInventoryFragment.newInstance(currentGoods, edit_currentSaleGoods)));
     }
 
     public void showSelectClientFragment() {
@@ -188,12 +205,12 @@ public class SaleActivity extends BaseAppCompatActivity implements SalesOrderInt
         saleOrderInfoFragment = fragment;
     }
 
-    public void setCurrentGoods(Goods current) {
+    public void setCurrentGoods(SaleGoods current) {
         currentGoods = current;
     }
 
-    public void setEditCurrentGoods(Goods editCurrentGoods) {
-        edit_currentGoods = editCurrentGoods;
+    public void setEditCurrentGoods(SaleGoods editCurrentGoods) {
+        edit_currentSaleGoods = editCurrentGoods;
     }
 
     public void addCurrentGoods() {
@@ -202,10 +219,11 @@ public class SaleActivity extends BaseAppCompatActivity implements SalesOrderInt
         }
 
         boolean isAdded = false;
-        for (Goods goods : GoodsList) {
-            if (goods.getItemID() == currentGoods.getItemID()
-                    && goods.getPrice() == currentGoods.getPrice()) {
-                goods.setQty(goods.getQty() + currentGoods.getQty());
+        for (SaleGoods goods : GoodsList) {
+            if (goods.getId() == currentGoods.getId()
+                    && goods.getPrice() == currentGoods.getPrice()
+                    && goods.getBrokerage() == currentGoods.getBrokerage()) {
+                goods.setQty(goods.getQty().add(currentGoods.getQty()));
                 goods.SelectedInventory.addAll(currentGoods.SelectedInventory);
                 isAdded = true;
                 break;
@@ -217,8 +235,9 @@ public class SaleActivity extends BaseAppCompatActivity implements SalesOrderInt
         }
     }
 
-    public void editCurrentGoods(Goods realGoods) {
+    public void editCurrentGoods(SaleGoods realGoods) {
         realGoods.setPrice(currentGoods.getPrice());
+        realGoods.setBrokerage(currentGoods.getBrokerage());
         realGoods.setQty(currentGoods.getQty());
 
         realGoods.SelectedInventory.clear();
@@ -227,12 +246,12 @@ public class SaleActivity extends BaseAppCompatActivity implements SalesOrderInt
         saleGoodsListFragment.onResume();
     }
 
-    public void delCurrentGoods(Goods currentGoods) {
+    public void delCurrentGoods(SaleGoods currentGoods) {
         GoodsList.remove(currentGoods);
 //        saleGoodsListFragment.onResume();
     }
 
-    public List<Goods> returnSaleGoodsList() {
+    public List<SaleGoods> returnSaleGoodsList() {
         return GoodsList;
     }
 
@@ -342,6 +361,12 @@ public class SaleActivity extends BaseAppCompatActivity implements SalesOrderInt
                 case KingdeeK3WiseWebServiceHelper.INVOKE_NULL:
                     ShowDialog.WarningDialog(SaleActivity.this, "基础数据初始化失败");
                     break;
+                case KingdeeK3WiseWebServiceHelper.INVOKE_BUSINESS_EXCEPTION:
+                    ShowDialog.WarningDialog(SaleActivity.this, msg.obj.toString());
+                    break;
+                case KingdeeK3WiseWebServiceHelper.INVOKE_EXCEPTION:
+                    ShowDialog.ExceptionDialog(SaleActivity.this, msg.obj.toString());
+                    break;
             }
         }
 
@@ -352,37 +377,22 @@ public class SaleActivity extends BaseAppCompatActivity implements SalesOrderInt
     }
 
     private void loadViewInitInfo(String jsonStr) throws Exception {
-        JSONArray jsonArray = new JSONArray(jsonStr);
-        for (int i = 0; i < jsonArray.length(); i++) {
-            String key = jsonArray.getJSONObject(i).getString("Key");
-            switch (key) {
-                case "DefaultClient":
-                    setDefaultClient(new JSONArray(jsonArray.getJSONObject(i).getString("Value")));
-                    break;
-                case "isGetGoodsClientPrice":
-                    Order.setGetClientGoodsPrice(jsonArray.getJSONObject(i).getBoolean("Value"));
-                    break;
-                case "StockGroupList":
-                    loadStockGroupList(new JSONArray(jsonArray.getJSONObject(i).getString("Value")));
-                    break;
-                case "ShippingTypeList":
-                    loadShippingTypeList(new JSONArray(jsonArray.getJSONObject(i).getString("Value")));
-                    break;
-                case "PayTypeList":
-                    loadPayTypeList(new JSONArray(jsonArray.getJSONObject(i).getString("Value")));
-                    break;
-                case "SaleTypeList":
-                    loadSaleTypeList(new JSONArray(jsonArray.getJSONObject(i).getString("Value")));
-                    break;
-            }
-        }
+        JSONObject jsonObj = new JSONObject(jsonStr);
+        setDefaultClient(new JSONObject(jsonObj.getString("DefaultClient")));
+        Order.setGetClientGoodsPrice(jsonObj.getBoolean("isGetGoodsClientPrice"));
+        loadStockGroupList(new JSONObject(jsonObj.getString("StockGroupList")));
+        loadShippingTypeList(new JSONArray(jsonObj.getString("ShippingTypeList")));
+        loadPayTypeList(new JSONArray(jsonObj.getString("PayTypeList")));
+        loadSaleTypeList(new JSONArray(jsonObj.getString("SaleTypeList")));
     }
 
-    private void loadStockGroupList(JSONArray jsonArray) throws Exception {
+    private void loadStockGroupList(JSONObject jsonObj) throws Exception {
         StockGroupList.clear();
-        for (int i = 0; i < jsonArray.length(); i++) {
-            int id = jsonArray.getJSONObject(i).getInt("Key");
-            String name = jsonArray.getJSONObject(i).getString("Value");
+        Iterator iterator = jsonObj.keys();
+        while (iterator.hasNext()) {
+            String key = iterator.next().toString();
+            int id = Integer.parseInt(key);
+            String name = jsonObj.getString(key);
             StockGroupList.addStockGroup(id, name);
         }
     }
@@ -420,18 +430,11 @@ public class SaleActivity extends BaseAppCompatActivity implements SalesOrderInt
         }
     }
 
-    private void setDefaultClient(JSONArray jsonArray) throws Exception {
+    private void setDefaultClient(JSONObject jsonObj) throws Exception {
         Client defClient = new Client();
-        for (int i = 0; i < jsonArray.length(); i++) {
-            String key = jsonArray.getJSONObject(i).getString("Key");
-            if (key.equals("Number")) {
-                defClient.setNumber(jsonArray.getJSONObject(i).getString("Value"));
-            } else {
-                defClient.setName(jsonArray.getJSONObject(i).getString("Value"));
-            }
-        }
+        defClient.setNumber(jsonObj.getString("Number"));
+        defClient.setName(jsonObj.getString("Name"));
 
-//            Order.Client=defClient;
         setSalesOrderClient(defClient);
     }
 
@@ -499,6 +502,12 @@ public class SaleActivity extends BaseAppCompatActivity implements SalesOrderInt
                 case KingdeeK3WiseWebServiceHelper.INVOKE_NULL:
                     ShowDialog.WarningDialog(SaleActivity.this, "销售订单提交失败");
                     break;
+                case KingdeeK3WiseWebServiceHelper.INVOKE_BUSINESS_EXCEPTION:
+                    ShowDialog.WarningDialog(SaleActivity.this, msg.obj.toString());
+                    break;
+                case KingdeeK3WiseWebServiceHelper.INVOKE_EXCEPTION:
+                    ShowDialog.ExceptionDialog(SaleActivity.this, msg.obj.toString());
+                    break;
             }
 
             super.onPostExecute(msg);
@@ -512,14 +521,15 @@ public class SaleActivity extends BaseAppCompatActivity implements SalesOrderInt
     }
 
     private void showSubmitOrderResult(String result) throws Exception {
-        JSONObject jsonObject = new JSONObject(result);
-        String message = jsonObject.getString("message");
-
-        if (jsonObject.getBoolean("sueecssed")) {
-            ShowDialog.MessageDialog(this, message, finishedSubmit());
-        } else {
-            ShowDialog.WarningDialog(this, String.format("单据提交失败，%s", message));
-        }
+//        JSONObject jsonObject = new JSONObject(result);
+//        String message = jsonObject.getString("message");
+//
+//        if (jsonObject.getBoolean("sueecssed")) {
+//            ShowDialog.MessageDialog(this, message, finishedSubmit());
+//        } else {
+//            ShowDialog.WarningDialog(this, String.format("单据提交失败，%s", message));
+//        }
+        ShowDialog.MessageDialog(this, result, finishedSubmit());
     }
 
     Runnable finishedSubmit() {
@@ -534,70 +544,128 @@ public class SaleActivity extends BaseAppCompatActivity implements SalesOrderInt
     }
 
     @Override
-    public Loader<Message> onCreateLoader(int id, Bundle args) {
-        final WebserviceLoader loader = new WebserviceLoader(this);
-        currentLoaderId = id;
+    public Bundle setWebserviceArgs(int loaderId) throws Exception {
+        Bundle bundle = new Bundle();
+        if (loaderId == 0) {
+            bundle.putString("WebMethod", "GetSalesOrderViewInitInfo");
+            JSONObject jsonParas = new JSONObject();
+            jsonParas.put("userNumber", LoginUser.Number);
+            bundle.putString("MethodParas", jsonParas.toString());
+        } else if (loaderId == 1) {
+            bundle.putString("WebMethod", "SubmitSalesOrder");
+
+            JSONObject jsonParas = new JSONObject();
+            String json = new Gson().toJson(Order);
+            jsonParas.put("orderJsonStr", json);
+            jsonParas.put("userid", LoginUser.Id);
+            jsonParas.put("usernumber", LoginUser.Number);
+            jsonParas.put("username", LoginUser.Name);
+            jsonParas.put("uuid", uuid);
+            bundle.putString("MethodParas", jsonParas.toString());
+        }
+        return bundle;
+    }
+
+    @Override
+    public void handleCreateLoader(int loaderId) {
+        if (loaderId == 0) {
+            setAllowCancelLoader(true);
+        } else if (loaderId == 1) {
+            setAllowCancelLoader(false);
+        }
+    }
+
+    @Override
+    public void handleLoaderCallbacksMessage(int loaderId, String msg) {
         try {
-            if (id == 0) {
-                String method = "GetSalesOrderViewInitInfo";
-                JSONObject jsonParas = new JSONObject();
-                jsonParas.put("userNumber", LoginUser.Number);
-                loader.setWebMethod(method);
-                loader.setMethodParas(jsonParas);
-                progressDialog = ShowDialog.showLoaderProgressDialog(this, loader);
-            } else if (id == 1) {
-                String method = "SubmitSalesOrder";
-                String json = new Gson().toJson(Order);
-                JSONObject jsonParas = new JSONObject();
-                jsonParas.put("orderJsonStr", json);
-                jsonParas.put("userid", LoginUser.Id);
-                jsonParas.put("usernumber", LoginUser.Number);
-                jsonParas.put("username", LoginUser.Name);
-                jsonParas.put("uuid", uuid);
-                loader.setWebMethod(method);
-                loader.setMethodParas(jsonParas);
-                progressDialog = ShowDialog.showLoaderProgressDialog(this, loader, false);
+            if (loaderId == 0) {
+                if (msg.length() == 0) {
+                    ShowDialog.ExceptionDialog(this, "读取初始化信息失败");
+                    return;
+                }
+                loadViewInitInfo(msg);
+                setDefaultSaleOrderInfo();
+
+            } else if (loaderId == 1) {
+                if (msg.length() == 0) {
+                    ShowDialog.ExceptionDialog(this, "单据提交失败");
+                    return;
+                }
+                showSubmitOrderResult(msg);
             }
         } catch (Exception ex) {
             ShowDialog.ExceptionDialog(this, ex.getMessage());
         }
-
-
-        return loader;
     }
 
-    @Override
-    public void onLoaderReset(Loader<Message> loader) {
-
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Message> loader, Message data) {
-        progressDialog.dismiss();
-
-        try {
-            if (loader != null && data != null) {
-                switch (data.what) {
-                    case KingdeeK3WiseWebServiceHelper.INVOKE_SUCCESS:
-                        if (loader.getId() == 0) {
-                            loadViewInitInfo(data.obj.toString());
-                            setDefaultSaleOrderInfo();
-                        } else if (loader.getId() == 1) {
-                            showSubmitOrderResult(data.obj.toString());
-                        }
-                        break;
-                    case KingdeeK3WiseWebServiceHelper.INVOKE_NULL:
-                        ShowDialog.WarningDialog(this, "读取数据失败");
-                        break;
-                    case KingdeeK3WiseWebServiceHelper.EXCEPTION:
-                        ShowDialog.ExceptionDialog(this, data.obj.toString());
-                        break;
-                }
-            }
-        } catch (Exception ex) {
-            ShowDialog.ExceptionDialog(SaleActivity.this, ex.getMessage());
-        } finally {
-            getSupportLoaderManager().destroyLoader(loader.getId());
-        }
-    }
+    //    @Override
+//    public Loader<Message> onCreateLoader(int id, Bundle args) {
+//        final WebserviceLoader loader = new WebserviceLoader(this);
+//
+//        try {
+//            if (id == 0) {
+//                String method = "GetSalesOrderViewInitInfo";
+//                JSONObject jsonParas = new JSONObject();
+//                jsonParas.put("userNumber", LoginUser.Number);
+//                loader.setWebMethod(method);
+//                loader.setMethodParas(jsonParas);
+//                progressDialog = ShowDialog.showLoaderProgressDialog(this, loader);
+//            } else if (id == 1) {
+//                String method = "SubmitSalesOrder";
+//                String json = new Gson().toJson(Order);
+//                JSONObject jsonParas = new JSONObject();
+//                jsonParas.put("orderJsonStr", json);
+//                jsonParas.put("userid", LoginUser.Id);
+//                jsonParas.put("usernumber", LoginUser.Number);
+//                jsonParas.put("username", LoginUser.Name);
+//                jsonParas.put("uuid", uuid);
+//                loader.setWebMethod(method);
+//                loader.setMethodParas(jsonParas);
+//                progressDialog = ShowDialog.showLoaderProgressDialog(this, loader, false);
+//            }
+//        } catch (Exception ex) {
+//            ShowDialog.ExceptionDialog(this, ex.getMessage());
+//        }
+//
+//
+//        return loader;
+//    }
+//
+//    @Override
+//    public void onLoaderReset(Loader<Message> loader) {
+//
+//    }
+//
+//    @Override
+//    public void onLoadFinished(Loader<Message> loader, Message data) {
+//        progressDialog.dismiss();
+//
+//        try {
+//            if (loader != null && data != null) {
+//                switch (data.what) {
+//                    case KingdeeK3WiseWebServiceHelper.INVOKE_SUCCESS:
+//                        if (loader.getId() == 0) {
+//                            loadViewInitInfo(data.obj.toString());
+//                            setDefaultSaleOrderInfo();
+//                        } else if (loader.getId() == 1) {
+//                            showSubmitOrderResult(data.obj.toString());
+//                        }
+//                        break;
+//                    case KingdeeK3WiseWebServiceHelper.INVOKE_NULL:
+//                        ShowDialog.WarningDialog(this, "读取数据失败");
+//                        break;
+//                    case KingdeeK3WiseWebServiceHelper.INVOKE_EXCEPTION:
+//                        ShowDialog.ExceptionDialog(this, data.obj.toString());
+//                        break;
+//                    case KingdeeK3WiseWebServiceHelper.INVOKE_BUSINESS_EXCEPTION:
+//                        ShowDialog.WarningDialog(this, data.obj.toString());
+//                        break;
+//                }
+//            }
+//        } catch (Exception ex) {
+//            ShowDialog.ExceptionDialog(SaleActivity.this, ex.getMessage());
+//        } finally {
+//            getSupportLoaderManager().destroyLoader(loader.getId());
+//        }
+//    }
 }

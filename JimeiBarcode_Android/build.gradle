@@ -8,8 +8,8 @@ android {
         applicationId "com.jimei.k3wise_mobile"
         minSdkVersion 15
         targetSdkVersion 24
-        versionCode 7
-        versionName "2.17.304.00"
+        versionCode 9
+        versionName "2.17.826.00"
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
@@ -31,7 +31,9 @@ dependencies {
     compile 'com.android.support:support-v4:24.2.1'
     compile 'com.google.code.gson:gson:2.7'
     compile 'com.android.support:support-vector-drawable:24.2.1'
+    compile 'com.github.chrisbanes:PhotoView:1.2.6'
     testCompile 'junit:junit:4.12'
+
 }
 
 //buildscript {

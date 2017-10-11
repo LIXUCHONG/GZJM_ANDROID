@@ -72,7 +72,7 @@ public class CommonHelper {
         Map<String, Object> map = new HashMap<String,Object>();
         // System.out.println(obj.getClass());
         // 获取f对象对应类中的所有属性域
-        Field[] fields = obj.getClass().getDeclaredFields();
+        Field[] fields = obj.getClass().getFields();
         for (int i = 0, len = fields.length; i < len; i++) {
             String varName = fields[i].getName();
             try {

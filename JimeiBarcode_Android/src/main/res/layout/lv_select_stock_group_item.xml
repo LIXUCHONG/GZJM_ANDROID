@@ -14,20 +14,21 @@
 
         <TextView
             android:id="@+id/item_stock_group_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:gravity="center"
             android:textColor="@color/bo_value"
-            android:textSize="20sp"/>
+            android:textSize="25sp"/>
 
         <TextView
             android:id="@+id/item_stock_group_qty"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:gravity="right"
+            android:layout_weight="1"
+            android:gravity="center"
             android:textColor="@color/bo_value"
-            android:textSize="20sp"/>
+            android:textSize="25sp"/>
 
     </LinearLayout>
 

@@ -14,4 +14,12 @@
         android:textSize="@dimen/nav_header_title_size"
         android:onClick="operationButtonClickHandler"/>
 
+    <Button
+        android:id="@+id/sale_order_edit_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="修改销售订单"
+        android:textSize="@dimen/nav_header_title_size"
+        android:onClick="operationButtonClickHandler"/>
+
 </LinearLayout>

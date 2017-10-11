@@ -357,6 +357,12 @@ public class SelectClientFragment extends HandledFragment {
                 case KingdeeK3WiseWebServiceHelper.INVOKE_NULL:
                     ShowDialog.WarningDialog(getActivity(), "读取数据失败");
                     break;
+                case KingdeeK3WiseWebServiceHelper.INVOKE_BUSINESS_EXCEPTION:
+                    ShowDialog.WarningDialog(getActivity(), msg.obj.toString());
+                    break;
+                case KingdeeK3WiseWebServiceHelper.INVOKE_EXCEPTION:
+                    ShowDialog.ExceptionDialog(getActivity(), msg.obj.toString());
+                    break;
             }
 
             super.onPostExecute(msg);
@@ -376,28 +382,33 @@ public class SelectClientFragment extends HandledFragment {
             for (int i = 0; i < jsonArray.length(); i++) {
 
                 Client client = new Client();
-                JSONArray clientJsonArray = new JSONArray(jsonArray.getJSONArray(i).toString());
+                JSONObject clientJson = new JSONObject(jsonArray.getJSONObject(i).toString());
+                client.setId(clientJson.getInt("Id"));
+                client.setParentId(clientJson.getInt("ParentId"));
+                client.setName(clientJson.getString("Name"));
+                client.setNumber(clientJson.getString("Number"));
+                client.setDetail(Boolean.parseBoolean(clientJson.getString("Detail")));
 
-                for (int j = 0; j < clientJsonArray.length(); j++) {
-
-                    String key = clientJsonArray.getJSONObject(j).getString("Key");
-                    switch (key) {
-                        case "Id":
-                            client.setId(clientJsonArray.getJSONObject(j).getInt("Value"));
-                            break;
-                        case "ParentId":
-                            client.setParentId(clientJsonArray.getJSONObject(j).getInt("Value"));
-                            break;
-                        case "Name":
-                            client.setName(clientJsonArray.getJSONObject(j).getString("Value"));
-                            break;
-                        case "Number":
-                            client.setNumber(clientJsonArray.getJSONObject(j).getString("Value"));
-                        case "Detail":
-                            client.setDetail(Boolean.parseBoolean(clientJsonArray.getJSONObject(j).getString("Value")));
-                            break;
-                    }
-                }
+//                for (int j = 0; j < clientJson.length(); j++) {
+//
+//                    String key = clientJson.getJSONObject(j).getString("Key");
+//                    switch (key) {
+//                        case "Id":
+//                            client.setId(clientJson.getJSONObject(j).getInt("Value"));
+//                            break;
+//                        case "ParentId":
+//                            client.setParentId(clientJson.getJSONObject(j).getInt("Value"));
+//                            break;
+//                        case "Name":
+//                            client.setName(clientJson.getJSONObject(j).getString("Value"));
+//                            break;
+//                        case "Number":
+//                            client.setNumber(clientJson.getJSONObject(j).getString("Value"));
+//                        case "Detail":
+//                            client.setDetail(Boolean.parseBoolean(clientJson.getJSONObject(j).getString("Value")));
+//                            break;
+//                    }
+//                }
 
                 clientList.add(client);
             }

@@ -14,7 +14,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
-import com.jimei.k3wise_mobile.BO.Goods;
+import com.jimei.k3wise_mobile.BO.SaleGoods;
 import com.jimei.k3wise_mobile.BO.Inventory;
 import com.jimei.k3wise_mobile.BO.StockGroup;
 import com.jimei.k3wise_mobile.BO.StockGroupList;
@@ -29,6 +29,7 @@ import com.jimei.k3wise_mobile.Util.ShowDialog;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,6 +46,7 @@ public class SelectInventoryFragment extends HandledFragment {
     WebserviceTask mTask;
 
     private View layoutSelectInventory;
+    private View layoutSelectStockGroup;
     private ListView lvSelectStockGroup;
     private TextView tvSelectedStockGroup;
     private ProgressView mProgressView;
@@ -53,8 +55,8 @@ public class SelectInventoryFragment extends HandledFragment {
     private TextView tvSelectStockQty;
     private TextView tvAllSelectStockQty;
 
-    Goods currentGoods;
-    Goods edit_currentGoods;
+    SaleGoods currentSaleGoods;
+    SaleGoods edit_currentSaleGoods;
     private List<Inventory> InventoryList;
     private boolean hasInventory;
 
@@ -89,7 +91,7 @@ public class SelectInventoryFragment extends HandledFragment {
      * @return A new instance of fragment SelectInventoryFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static SelectInventoryFragment newInstance(Goods currentGoods,Goods editCurrentGoods) {
+    public static SelectInventoryFragment newInstance(SaleGoods currentGoods, SaleGoods editCurrentGoods) {
         SelectInventoryFragment fragment = new SelectInventoryFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_CURRENT_GOODS, currentGoods);
@@ -116,9 +118,9 @@ public class SelectInventoryFragment extends HandledFragment {
         try {
             super.onCreate(savedInstanceState);
             if (getArguments() != null) {
-                currentGoods = (Goods) getArguments().getSerializable(ARG_CURRENT_GOODS);
-                edit_currentGoods=(Goods) getArguments().getSerializable(ARG_EDIT_CURRENT_GOODS);
-                InventoryList = (List<Inventory>) (CommonHelper.deepClone(currentGoods.SelectedInventory));
+                currentSaleGoods = (SaleGoods) getArguments().getSerializable(ARG_CURRENT_GOODS);
+                edit_currentSaleGoods =(SaleGoods) getArguments().getSerializable(ARG_EDIT_CURRENT_GOODS);
+                InventoryList = (List<Inventory>) (CommonHelper.deepClone(currentSaleGoods.SelectedInventory));
             }
         }catch (Exception ex){
             ShowDialog.ExceptionDialog(getActivity(), ex.getMessage(), new Runnable() {
@@ -135,6 +137,7 @@ public class SelectInventoryFragment extends HandledFragment {
                              Bundle savedInstanceState) {
         View view = super.onCreateView(inflater,container,savedInstanceState);
         layoutSelectInventory = view.findViewById(R.id.select_inventory_layout);
+        layoutSelectStockGroup=view.findViewById(R.id.select_stock_group_layout);
         lvSelectStockGroup = (ListView) view.findViewById(R.id.select_stock_group_lv);
         tvSelectedStockGroup = (TextView) view.findViewById(R.id.select_inventory_value_selected_stock);
         mProgressView = (ProgressView) view.findViewById(R.id.select_inventory_progress);
@@ -150,7 +153,7 @@ public class SelectInventoryFragment extends HandledFragment {
                 try {
                     bindStockGroupList();
                     layoutSelectInventory.setVisibility(View.GONE);
-                    lvSelectStockGroup.setVisibility(View.VISIBLE);
+                    layoutSelectStockGroup.setVisibility(View.VISIBLE);
                 } catch (Exception ex) {
                     ShowDialog.ExceptionDialog(getActivity(), ex.getMessage());
                 }
@@ -169,9 +172,9 @@ public class SelectInventoryFragment extends HandledFragment {
 //                        }
 //                    }
 //                }
-                currentGoods.SelectedInventory =new ArrayList<>(InventoryList);
+                currentSaleGoods.SelectedInventory =new ArrayList<>(InventoryList);
 
-                currentGoods.setQty(Double.parseDouble(tvAllSelectStockQty.getText().toString()));
+                currentSaleGoods.setQty(new BigDecimal(tvAllSelectStockQty.getText().toString()));
 //                currentGoods.setPrice(0);
 
 //                String selectedStockGroupName = tvSelectedStockGroup.getText().toString();
@@ -183,8 +186,10 @@ public class SelectInventoryFragment extends HandledFragment {
 //                    currentGoods.setSelectedInventoryStockGroup("");
 //                }
 
-                salesOrderInterface.setCurrentGoods(currentGoods);
+                salesOrderInterface.setCurrentGoods(currentSaleGoods);
+                salesOrderInterface.setFragmentResult(true);
                 getActivity().getSupportFragmentManager().popBackStack();
+
             }
         });
 
@@ -211,9 +216,9 @@ public class SelectInventoryFragment extends HandledFragment {
     }
 
     public boolean onBackPressed() {
-        if (lvSelectStockGroup.getVisibility() == View.VISIBLE) {
+        if (layoutSelectStockGroup.getVisibility() == View.VISIBLE) {
             layoutSelectInventory.setVisibility(View.VISIBLE);
-            lvSelectStockGroup.setVisibility(View.GONE);
+            layoutSelectStockGroup.setVisibility(View.GONE);
             return false;
         } else {
             cancelInventorySelectedChange();
@@ -222,15 +227,15 @@ public class SelectInventoryFragment extends HandledFragment {
     }
 
     private void cancelInventorySelectedChange() {
-        for (Inventory inv : currentGoods.SelectedInventory) {
+        for (Inventory inv : currentSaleGoods.SelectedInventory) {
             inv.setSelected(true);
         }
     }
 
-    private void getInventoryList(StockGroup stockGroup, Goods goods) {
+    private void getInventoryList(StockGroup stockGroup, SaleGoods goods) {
         JSONObject jParas = new JSONObject();
         try {
-            jParas.put("itemid", currentGoods.getItemID());
+            jParas.put("itemid", currentSaleGoods.getId());
             jParas.put("stockparentid", stockGroup.getID());
         } catch (Exception ex) {
             ShowDialog.ExceptionDialog(getActivity(), ex.getMessage());
@@ -243,13 +248,13 @@ public class SelectInventoryFragment extends HandledFragment {
     }
 
     private List<Inventory> getAllSelectedInventoryList() {
-        List<Goods> goodsList = salesOrderInterface.returnSaleGoodsList();
+        List<SaleGoods> goodsList = salesOrderInterface.returnSaleGoodsList();
 
         List<Inventory> allSelected = new ArrayList<>();
 
         if (goodsList != null) {
-            for (Goods goods : goodsList) {
-                if (goods != edit_currentGoods) {
+            for (SaleGoods goods : goodsList) {
+                if (goods != edit_currentSaleGoods) {
                     allSelected.addAll(goods.SelectedInventory);
                 }
             }
@@ -296,9 +301,9 @@ public class SelectInventoryFragment extends HandledFragment {
                 TextView nameView = (TextView) view.findViewById(R.id.item_stock_group_name);
                 tvSelectedStockGroup.setText(nameView.getText());
                 layoutSelectInventory.setVisibility(View.VISIBLE);
-                lvSelectStockGroup.setVisibility(View.GONE);
+                layoutSelectStockGroup.setVisibility(View.GONE);
 
-                getInventoryList(StockGroupList.getStockGroupById(Integer.parseInt(idView.getText().toString())), currentGoods);
+                getInventoryList(StockGroupList.getStockGroupById(Integer.parseInt(idView.getText().toString())), currentSaleGoods);
             }
         });
     }
@@ -472,6 +477,12 @@ public class SelectInventoryFragment extends HandledFragment {
                 case KingdeeK3WiseWebServiceHelper.INVOKE_NULL:
                     ShowDialog.WarningDialog(getActivity(), "读取数据失败");
                     break;
+                case KingdeeK3WiseWebServiceHelper.INVOKE_BUSINESS_EXCEPTION:
+                    ShowDialog.WarningDialog(getActivity(), msg.obj.toString());
+                    break;
+                case KingdeeK3WiseWebServiceHelper.INVOKE_EXCEPTION:
+                    ShowDialog.ExceptionDialog(getActivity(), msg.obj.toString());
+                    break;
             }
 
             super.onPostExecute(msg);
@@ -485,27 +496,32 @@ public class SelectInventoryFragment extends HandledFragment {
             for (int i = 0; i < jsonArray.length(); i++) {
 
                 Inventory itemInv = new Inventory();
-                JSONArray itemJsonArray = new JSONArray(jsonArray.getJSONArray(i).toString());
+                JSONObject itemJson = new JSONObject(jsonArray.getJSONObject(i).toString());
 
-                for (int j = 0; j < itemJsonArray.length(); j++) {
+                itemInv.setBatchNo(itemJson.getString("BatchNo"));
+                itemInv.setStockName(itemJson.getString("StockName"));
+                itemInv.setPlaceName(itemJson.getString("PlaceName"));
+                itemInv.setQty(itemJson.getDouble("Qty"));
+                itemInv.setStockGroupName(tvSelectedStockGroup.getText().toString());
 
-                    String key = itemJsonArray.getJSONObject(j).getString("Key");
-                    switch (key) {
-                        case "BatchNo":
-                            itemInv.setBatchNo(itemJsonArray.getJSONObject(j).getString("Value"));
-                            break;
-                        case "StockName":
-                            itemInv.setStockName(itemJsonArray.getJSONObject(j).getString("Value"));
-                            break;
-                        case "PlaceName":
-                            itemInv.setPlaceName(itemJsonArray.getJSONObject(j).getString("Value"));
-                            break;
-                        case "Qty":
-                            itemInv.setQty(itemJsonArray.getJSONObject(j).getDouble("Value"));
-                            break;
-                    }
-                    itemInv.setStockGroupName(tvSelectedStockGroup.getText().toString());
-                }
+//                for (int j = 0; j < itemJson.length(); j++) {
+//
+//                    String key = itemJson.getJSONObject(j).getString("Key");
+//                    switch (key) {
+//                        case "BatchNo":
+//                            itemInv.setBatchNo(itemJson.getJSONObject(j).getString("Value"));
+//                            break;
+//                        case "StockName":
+//                            itemInv.setStockName(itemJson.getJSONObject(j).getString("Value"));
+//                            break;
+//                        case "PlaceName":
+//                            itemInv.setPlaceName(itemJson.getJSONObject(j).getString("Value"));
+//                            break;
+//                        case "Qty":
+//                            itemInv.setQty(itemJson.getJSONObject(j).getDouble("Value"));
+//                            break;
+//                    }
+//                }
 
                 invList.add(itemInv);
             }

@@ -6,6 +6,9 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Message;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -15,18 +18,108 @@ import android.widget.TextView;
 
 import com.jimei.k3wise_mobile.R;
 import com.jimei.k3wise_mobile.Util.CommonHelper;
+import com.jimei.k3wise_mobile.Util.KingdeeK3WiseWebServiceHelper;
+import com.jimei.k3wise_mobile.Util.ShowDialog;
+
+import org.json.JSONObject;
 
 /**
  * Created by lee on 2016/9/11.
  */
-public abstract class BaseAppCompatActivity extends AppCompatActivity {
+public abstract class BaseAppCompatActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Message>{
 
     private TextView mToolbarTitle;
     private TextView mToolbarSubTitle;
     private Toolbar mToolbar;
 
-    protected int currentLoaderId;
     protected ProgressDialog progressDialog;
+
+    boolean allowCancelLoader;
+    boolean allowDestroyLoader;
+
+    public void setAllowCancelLoader(boolean allowCancelLoader) {
+        this.allowCancelLoader = allowCancelLoader;
+    }
+
+    public void setAllowDestroyLoader(boolean allowDestroyLoader) {
+        this.allowDestroyLoader = allowDestroyLoader;
+    }
+
+    public void handleCreateLoader(int loaderId){
+
+    }
+
+    public void handleLoaderCallbacksMessage (int loaderId, String msg){
+
+    }
+
+    public Bundle setWebserviceArgs(int loaderId) throws Exception{
+        return null;
+    }
+
+    @Override
+    public Loader<Message> onCreateLoader(int id, Bundle args) {
+        allowCancelLoader=false;
+        allowDestroyLoader=true;
+        final WebserviceLoader loader = new WebserviceLoader(this);
+        try {
+            Bundle bundle=setWebserviceArgs(id);
+            if(bundle==null
+                    ||bundle.getString("WebMethod")==null
+                    ||bundle.getString("WebMethod").equals("")
+                    ||bundle.getString("MethodParas")==null
+                    ||bundle.getString("MethodParas").equals("")){
+                throw new Exception(String.format("无效的请求参数，LoaderId:%d",id));
+            }
+
+            loader.setWebMethod(bundle.getString("WebMethod"));
+            loader.setMethodParas(new JSONObject(bundle.getString("MethodParas")));
+            handleCreateLoader(id);
+            progressDialog = ShowDialog.showLoaderProgressDialog(this, loader, allowCancelLoader);
+        } catch (Exception ex) {
+            ShowDialog.ExceptionDialog(this, ex.getMessage());
+            return null;
+        }
+
+        return loader;
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Message> loader) {
+
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Message> loader, Message data) {
+        progressDialog.dismiss();
+
+        try {
+            if (loader != null && data != null) {
+                switch (data.what) {
+                    case KingdeeK3WiseWebServiceHelper.INVOKE_SUCCESS:
+                        handleLoaderCallbacksMessage(loader.getId(),data.obj.toString());
+                        break;
+                    case KingdeeK3WiseWebServiceHelper.INVOKE_NULL:
+                        ShowDialog.WarningDialog(this, "读取数据失败");
+                        break;
+                    case KingdeeK3WiseWebServiceHelper.INVOKE_EXCEPTION:
+                        ShowDialog.ExceptionDialog(this, data.obj.toString());
+                        break;
+                    case KingdeeK3WiseWebServiceHelper.INVOKE_BUSINESS_EXCEPTION:
+                        ShowDialog.WarningDialog(this, data.obj.toString());
+                        break;
+                }
+            }
+        } catch (Exception ex) {
+            ShowDialog.ExceptionDialog(this, ex.getMessage());
+        } finally {
+            if(allowDestroyLoader){
+                getSupportLoaderManager().destroyLoader(loader.getId());
+            }
+        }
+    }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

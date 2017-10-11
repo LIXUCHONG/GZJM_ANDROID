@@ -39,6 +39,10 @@
             android:name=".SaleActivity"
             android:label="@string/title_sale_activity"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name=".FindDocumentActivity"
+            android:label="@string/title_find_documents"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
